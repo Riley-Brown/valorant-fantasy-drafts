@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 
+import { getMatchStats } from 'API/matchStats';
+
 export default function MatchStats() {
   const { matchId } = useParams();
 
   const [matchData, setMatchData] = useState();
 
   useEffect(() => {
-    fetch(`http://localhost:9999/match-stats/${matchId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((jsonData) =>
-      jsonData.json().then((matchData) => {
-        console.log(matchData);
-        setMatchData(matchData);
-      })
-    );
+    getMatchStats(matchId).then((matchData) => {
+      setMatchData(matchData);
+    });
   }, []);
 
-  return <div></div>;
+  return <div>ayyy lmao sup?? </div>;
 }

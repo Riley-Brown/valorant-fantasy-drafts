@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 
+import { getPlayerMatches } from 'API/playerMatches';
+
 export default function Player() {
   const [playerData, setPlayerData] = useState();
   const { playerId } = useParams();
@@ -9,27 +11,10 @@ export default function Player() {
   const history = useHistory();
 
   useEffect(() => {
-    const lsPlayerData = localStorage.getItem(playerData);
-
-    if (lsPlayerData) {
-      setPlayerData(lsPlayerData);
-    } else {
-      console.log(playerId, location.hash);
-      const encode = encodeURIComponent(`${playerId}${location.hash}`);
-
-      fetch(`http://localhost:9999/player-matches/${encode}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((jsonData) =>
-        jsonData.json().then((playerData) => {
-          console.log(playerData);
-          setPlayerData(playerData);
-          localStorage.setItem(playerId, JSON.stringify(playerData));
-        })
-      );
-    }
+    const encode = encodeURIComponent(`${playerId}${location.hash}`);
+    getPlayerMatches(encode).then((playerData) => {
+      setPlayerData(playerData);
+    });
   }, []);
 
   return (
@@ -69,8 +54,8 @@ export default function Player() {
                     style={{
                       color:
                         match.metadata.result === 'defeat'
-                          ? 'rgb(255, 74, 89)'
-                          : 'rgb(48, 235, 191)'
+                          ? 'var(--danger)'
+                          : 'var(--success)'
                     }}
                   >
                     {match.metadata.result}
