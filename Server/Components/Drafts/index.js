@@ -1,15 +1,17 @@
-import mongoClient from '../../DB';
+import { createMongoClient } from '../../DB';
+import { getLeaderboard } from '../Leaderboard';
+
+import Mongodb from 'mongodb';
 
 export async function createDraft({ startDate, endDate }) {
-  if (!mongoClient.isConnected()) {
-    await mongoClient.connect();
-  }
+  const mongoClient = createMongoClient();
+  await mongoClient.connect();
 
   const collection = mongoClient.db('valorant-draft-db').collection('drafts');
 
-  console.log(collection);
+  const players = await getLeaderboard();
 
-  const insert = await collection.insertOne({ startDate, endDate });
+  const insert = await collection.insertOne({ startDate, endDate, players });
 
   await mongoClient.close();
   console.log(insert.insertedCount);
@@ -17,9 +19,8 @@ export async function createDraft({ startDate, endDate }) {
 }
 
 export async function getAllDrafts() {
-  if (!mongoClient.isConnected()) {
-    await mongoClient.connect();
-  }
+  const mongoClient = createMongoClient();
+  await mongoClient.connect();
 
   const collection = mongoClient.db('valorant-draft-db').collection('drafts');
 
@@ -28,7 +29,30 @@ export async function getAllDrafts() {
   return results;
 }
 
-export async function getDraft(draftId) {
-  try {
-  } catch (err) {}
+export async function getUpcomingDrafts() {
+  const mongoClient = createMongoClient();
+  await mongoClient.connect();
+
+  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
+
+  const results = await collection
+    .find({
+      startDate: {
+        $gt: Date.now() / 1000
+      }
+    })
+    .toArray();
+
+  return results;
+}
+
+export async function getUpcomingDraft(draftId) {
+  const mongoClient = createMongoClient();
+  await mongoClient.connect();
+
+  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
+
+  const results = await collection.findOne({ _id: Mongodb.ObjectId(draftId) });
+
+  return results;
 }

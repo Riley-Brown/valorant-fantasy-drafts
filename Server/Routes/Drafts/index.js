@@ -1,7 +1,12 @@
 import { Router } from 'express';
 const router = Router();
 
-import { createDraft, getAllDrafts } from '../../Components/Drafts';
+import {
+  createDraft,
+  getAllDrafts,
+  getUpcomingDrafts,
+  getUpcomingDraft
+} from '../../Components/Drafts';
 
 router.post('/create-draft', async (req, res) => {
   const { startDate, endDate } = req.body;
@@ -43,6 +48,25 @@ router.get('/get-drafts', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.send({ type: 'error', message: 'something went wrong' });
+  }
+});
+
+router.get('/upcoming', async (req, res) => {
+  try {
+    const drafts = await getUpcomingDrafts();
+    res.send(drafts);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get('/upcoming/:draftId', async (req, res) => {
+  try {
+    const draft = await getUpcomingDraft(req.params.draftId);
+    console.log(draft);
+    res.send(draft);
+  } catch (err) {
+    console.log(err);
   }
 });
 
