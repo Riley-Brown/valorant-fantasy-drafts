@@ -6,6 +6,7 @@ import Player from 'Pages/Player';
 import MatchStats from 'Pages/MatchStats';
 import UpcomingDrafts from 'Pages/UpcomingDrafts';
 import UpcomingDraft from 'Pages/UpcomingDraft';
+import ClosestUpcomingDraft from 'Pages/ClosestUpcomingDraft';
 
 function App() {
   return (
@@ -18,12 +19,13 @@ function App() {
           path="/player/:playerId/match/:matchId"
           component={MatchStats}
         />
-        <Route exact path="/" component={UpcomingDrafts} />
         <Route
           exact
           path="/draft/upcoming/:draftId"
           component={UpcomingDraft}
         />
+        {/* <Route exact path="/" component={UpcomingDrafts} /> */}
+        <Route path="/" component={ClosestUpcomingDraft} />
       </Switch>
     </>
   );
