@@ -12,8 +12,6 @@ export default function useCountdownTimer({ unixTimestamp }) {
     return { days, hours, minutes, seconds };
   };
 
-  console.log(calculateTimeLeft());
-
   const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft());
 
   useEffect(() => {
