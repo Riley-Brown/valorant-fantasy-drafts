@@ -56,3 +56,26 @@ export async function getUpcomingDraft(draftId) {
 
   return results;
 }
+
+export async function getClosestUpcomingDraft() {
+  const mongoClient = createMongoClient();
+  await mongoClient.connect();
+
+  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
+
+  const results = await collection
+    .find({
+      startDate: {
+        $gt: Date.now() / 1000
+      }
+    })
+    .limit(5)
+    .sort({ startDate: 1 })
+    .toArray();
+
+  if (results.length > 0) {
+    return results[0];
+  } else {
+    return results;
+  }
+}

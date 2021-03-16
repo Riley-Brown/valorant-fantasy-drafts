@@ -5,7 +5,8 @@ import {
   createDraft,
   getAllDrafts,
   getUpcomingDrafts,
-  getUpcomingDraft
+  getUpcomingDraft,
+  getClosestUpcomingDraft
 } from '../../Components/Drafts';
 
 router.post('/create-draft', async (req, res) => {
@@ -60,9 +61,19 @@ router.get('/upcoming', async (req, res) => {
   }
 });
 
-router.get('/upcoming/:draftId', async (req, res) => {
+router.get('/upcoming/id/:draftId', async (req, res) => {
   try {
     const draft = await getUpcomingDraft(req.params.draftId);
+    console.log(draft);
+    res.send(draft);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get('/upcoming/closest-draft', async (req, res) => {
+  try {
+    const draft = await getClosestUpcomingDraft();
     console.log(draft);
     res.send(draft);
   } catch (err) {
