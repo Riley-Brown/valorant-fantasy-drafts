@@ -1,7 +1,7 @@
 import { createMongoClient } from '../../DB';
 import { getLeaderboard } from '../Leaderboard';
 
-import Mongodb from 'mongodb';
+import { v4 as uuid } from 'uuid';
 
 export async function createDraft({ startDate, endDate }) {
   const mongoClient = createMongoClient();
@@ -11,10 +11,21 @@ export async function createDraft({ startDate, endDate }) {
 
   const players = await getLeaderboard();
 
-  const insert = await collection.insertOne({ startDate, endDate, players });
+  const draftId = uuid();
+
+  const insert = await collection.insertOne({
+    _id: draftId,
+    startDate,
+    endDate,
+    players
+  });
+
+  await mongoClient
+    .db('valorant-draft-db')
+    .createCollection(`draft-participants-${draftId}`);
 
   await mongoClient.close();
-  console.log(insert.insertedCount);
+
   return insert.insertedCount;
 }
 
@@ -52,9 +63,7 @@ export async function getUpcomingDraft(draftId) {
 
   const collection = mongoClient.db('valorant-draft-db').collection('drafts');
 
-  const results = await collection.findOne({ _id: Mongodb.ObjectId(draftId) });
-
-  return results;
+  return await collection.findOne({ _id: draftId });
 }
 
 export async function getClosestUpcomingDraft() {
