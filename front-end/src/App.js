@@ -7,6 +7,8 @@ import MatchStats from 'Pages/MatchStats';
 import UpcomingDrafts from 'Pages/UpcomingDrafts';
 import UpcomingDraft from 'Pages/UpcomingDraft';
 import ClosestUpcomingDraft from 'Pages/ClosestUpcomingDraft';
+import Login from 'Pages/Login';
+import Signup from 'Pages/Signup';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           path="/draft/upcoming/:draftId"
           component={UpcomingDraft}
         />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/signup" component={Signup} />
         {/* <Route exact path="/" component={UpcomingDrafts} /> */}
         <Route path="/" component={ClosestUpcomingDraft} />
       </Switch>
