@@ -11,6 +11,7 @@ import {
 
 router.post('/create-draft', async (req, res) => {
   const { startDate, endDate } = req.body;
+  const currentDateUnix = Date.now() / 1000;
 
   if (!startDate || !endDate) {
     return res.send({
@@ -26,15 +27,25 @@ router.post('/create-draft', async (req, res) => {
     });
   }
 
-  if (endDate < Date.now() / 1000) {
+  if (endDate < currentDateUnix) {
     return res.send({
       type: 'error',
       message: 'Draft end date cannot be in the past'
     });
   }
 
+  if (startDate < currentDateUnix) {
+    return res.send({
+      type: 'error',
+      message: 'Draft start date cannot be in the past'
+    });
+  }
+
   try {
-    await createDraft({ startDate, endDate });
+    await createDraft({
+      startDate: Math.floor(startDate),
+      endDate: Math.floor(endDate)
+    });
     res.send({ type: 'ok', message: 'Draft created' });
   } catch (err) {
     console.log(err);
