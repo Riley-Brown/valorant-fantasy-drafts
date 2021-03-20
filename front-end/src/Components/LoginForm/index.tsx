@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useHistory } from 'react-router';
 
 import { login } from 'API/auth';
 
 import './LoginForm.scss';
 import SpinnerButton from 'Components/SpinnerButton';
+import { useDispatch } from 'react-redux';
+import { setIsAuthed } from 'Actions/global';
+import { getAccount } from 'API/account';
+import { setAccount } from 'Actions/account';
 
-export default function LoginForm() {
+export default function LoginForm({
+  onLoginSuccess
+}: {
+  onLoginSuccess: () => any;
+}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,7 +23,9 @@ export default function LoginForm() {
 
   const history = useHistory();
 
-  const handleLogin = async (e) => {
+  const dispatch = useDispatch();
+
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
@@ -23,8 +33,21 @@ export default function LoginForm() {
     const loginRes = await login({ email, password });
 
     if (loginRes.type === 'ok') {
+      dispatch(setIsAuthed(true));
+      // history.push('/');
+
+      const account = await getAccount();
+      dispatch(
+        setAccount({
+          email: account.data.email,
+          balance: account.data.balance,
+          balanceFormatted: `$${account.data.balance * 100}`,
+          userId: account.data._id
+        })
+      );
+
       setLoading(false);
-      history.push('/');
+      onLoginSuccess();
     } else {
       setLoading(false);
       setError(loginRes.message);
