@@ -10,6 +10,7 @@ export const requireAuth = (req, res, next) => {
         console.log(err);
       } else {
         console.log({ decodedToken });
+        res.locals.userTokenObject = decodedToken;
         next();
       }
     });
