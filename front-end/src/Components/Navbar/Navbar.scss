@@ -1,0 +1,18 @@
+#navbar {
+  background: #222;
+  color: white;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  h1 {
+    margin-right: 20px;
+  }
+  .btn {
+    min-width: 150px;
+    color: white;
+    background-color: var(--primary);
+  }
+}
