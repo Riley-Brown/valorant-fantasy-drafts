@@ -6,6 +6,9 @@
   padding: 20px;
   border-radius: 4px;
   transition: 300ms;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
   .avatar {
     width: 100px;
     height: 100px;
