@@ -148,7 +148,7 @@ export default function ClosestUpcomingDraft() {
         <div style={{ marginLeft: '100px', flex: 'auto' }}>
           <div
             className="sticky-wrapper"
-            style={{ position: 'sticky', top: '25px' }}
+            style={{ position: 'sticky', top: isAuthed ? '135px' : '25px' }}
           >
             <SelectedRoster
               selectedRoster={selectedRoster}
