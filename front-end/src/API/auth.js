@@ -23,3 +23,12 @@ export async function signup({ email, password }) {
 
   return res.json();
 }
+
+export async function logout() {
+  const res = await fetch('http://localhost:9999/auth/logout', {
+    method: 'POST',
+    credentials: 'include'
+  });
+
+  return res.json();
+}
