@@ -36,3 +36,16 @@ export async function getClosestUpcomingDraft() {
 
   return res.json();
 }
+
+export async function enterDraft({ draftId, selectedRoster }) {
+  const res = await fetch(`http://localhost:9999/drafts/enter-draft`, {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ draftId, selectedRoster })
+  });
+
+  return res.json();
+}
