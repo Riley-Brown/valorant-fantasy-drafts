@@ -65,14 +65,27 @@ router.post('/', async (req, res) => {
       });
     }
 
+    const enterDate = Math.floor(Date.now() / 1000);
+
     const insert = await draftParticipantsCollection.insertOne({
       _id: userId,
       draftId,
-      enterDate: Math.floor(Date.now() / 1000),
-      selectedRoster
+      enterDate,
+      selectedRoster,
+      userId
     });
 
     if (insert.insertedCount === 1) {
+      const usersCollection = mongoClient
+        .db('valorant-draft-db')
+        .collection('users');
+
+      // Update user's drafts array in DB
+      await usersCollection.findOneAndUpdate(
+        { _id: userId },
+        { $push: { drafts: { draftId, enterDate } } }
+      );
+
       res.send({
         type: 'success',
         message: 'User successfully entered into draft'
