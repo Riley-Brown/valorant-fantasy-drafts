@@ -7,7 +7,10 @@ export const requireAuth = (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
       if (err) {
-        console.log(err);
+        return res.send({
+          type: 'sessionExpired',
+          message: 'Login session expired, please login again'
+        });
       } else {
         console.log({ decodedToken });
         res.locals.userTokenObject = decodedToken;
@@ -15,6 +18,6 @@ export const requireAuth = (req, res, next) => {
       }
     });
   } else {
-    res.send({ type: 'error', message: 'Not authorized' });
+    return res.send({ type: 'authError', message: 'Not authorized' });
   }
 };
