@@ -21,19 +21,10 @@ router.post('/', async (req, res) => {
       return res.send({ type: 'error', message: 'Draft does not exist' });
     }
 
-    const draftParticipantsCollection = mongoClient
-      .db('valorant-draft-db')
-      .collection(`draft-participants-${draftId}`);
-
-    if (!draftParticipantsCollection) {
-      return res.send({ type: 'error', message: 'Draft does not exist' });
-    }
-
-    const isUserAlreadyEntered = await draftParticipantsCollection.findOne({
-      _id: userId
-    });
-
     const validateSelectedRoster = () => {
+      if (!Array.isArray(selectedRoster) || selectedRoster.length !== 5) {
+        return false;
+      }
       const draftPlayers = upcomingDraft.players.data.items;
 
       for (let i = 0; i < selectedRoster.length; i++) {
@@ -54,6 +45,18 @@ router.post('/', async (req, res) => {
     if (!isSelectedRosterValid) {
       return res.send({ type: 'error', message: 'invalid draft players' });
     }
+
+    const draftParticipantsCollection = mongoClient
+      .db('valorant-draft-db')
+      .collection(`draft-participants-${draftId}`);
+
+    if (!draftParticipantsCollection) {
+      return res.send({ type: 'error', message: 'Draft does not exist' });
+    }
+
+    const isUserAlreadyEntered = await draftParticipantsCollection.findOne({
+      _id: userId
+    });
 
     if (isUserAlreadyEntered) {
       return res.send({
