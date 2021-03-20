@@ -1,4 +1,13 @@
-import React from 'react';
+import { ReactNode } from 'react';
+
+type SpinnerButtonTypes = {
+  className?: string;
+  loading: boolean;
+  success?: boolean;
+  successClass?: string;
+  children?: ReactNode;
+  [rest: string]: any;
+};
 
 export default function SpinnerButton({
   spinnerProps,
@@ -6,7 +15,7 @@ export default function SpinnerButton({
   children,
   className,
   ...rest
-}) {
+}: SpinnerButtonTypes) {
   if (loading) {
     return (
       <button
