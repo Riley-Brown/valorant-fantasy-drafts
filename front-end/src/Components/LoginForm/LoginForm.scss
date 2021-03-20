@@ -1,0 +1,30 @@
+#login-form {
+  form {
+    border-radius: 4px;
+    background: #fff;
+    padding: 20px;
+    .input-wrapper {
+      margin-bottom: 20px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input {
+        padding: 10px;
+        width: 100%;
+      }
+    }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      width: 100%;
+      padding: 10px;
+      height: 45px;
+      margin-top: 20px;
+    }
+  }
+}
