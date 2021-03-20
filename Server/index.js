@@ -16,6 +16,8 @@ import Scores from './Routes/Scores';
 import EnterDraft from './Routes/EnterDraft';
 import Login from './Routes/Login';
 import Signup from './Routes/Signup';
+import Account from './Routes/Account';
+import Logout from './Routes/Logout';
 
 import { requireAuth } from './Middleware/authMiddleware';
 
@@ -41,6 +43,8 @@ server.use('/scores', Scores);
 server.use('/drafts/enter-draft', requireAuth, EnterDraft);
 server.use('/auth/login', Login);
 server.use('/auth/signup', Signup);
+server.use('/account', requireAuth, Account);
+server.use('/auth/logout', requireAuth, Logout);
 
 const port = process.env.PORT || 9999;
 
