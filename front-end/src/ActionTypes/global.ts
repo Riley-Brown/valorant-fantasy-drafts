@@ -1,0 +1,2 @@
+export const SET_IS_AUTHED = 'SET_IS_AUTHED';
+export const SET_SHOW_AUTH_MODAL = 'SET_SHOW_AUTH_MODAL';
