@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { getClosestUpcomingDraft } from 'API/drafts';
+import { enterDraft, getClosestUpcomingDraft } from 'API/drafts';
 
 import AvailableDraftPlayer from './AvailableDraftPlayer';
 import SelectedRoster from './SelectedRoster';
 
 import useCountdownTimer from 'Hooks/useCountdownTimer';
+import SpinnerButton from 'Components/SpinnerButton';
+
+import './ClosestUpcomingDraft.scss';
 
 export default function ClosestUpcomingDraft() {
   const [closestDraft, setClosestDraft] = useState();
   const [selectedRoster, setSelectedRoster] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getClosestUpcomingDraft().then((draft) => {
@@ -45,6 +49,7 @@ export default function ClosestUpcomingDraft() {
 
   return (
     <div
+      id="closest-upcoming-draft"
       style={{
         margin: '40px',
         maxWidth: '1100px',
@@ -93,22 +98,22 @@ export default function ClosestUpcomingDraft() {
             setSelectedRoster={setSelectedRoster}
             handleRemoveSelectedPlayer={handleRemoveSelectedPlayer}
           />
-          <button
-            style={{
-              display: 'block',
-              background: 'white',
-              color: '#222',
-              fontWeight: 600,
-              fontSize: '1.3rem',
-              width: '100%',
-              minHeight: '75px',
-              marginTop: '40px'
-            }}
+          <SpinnerButton
+            className="btn lock-in-button"
+            spinnerProps={{ style: { color: '#2663f2' } }}
+            loading={loading}
             disabled={selectedRoster.length < 5}
-            className="btn"
+            onClick={async () => {
+              setLoading(true);
+              await enterDraft({
+                draftId: closestDraft._id,
+                selectedRoster: selectedRoster.map((player) => player.id)
+              });
+              setLoading(false);
+            }}
           >
             Lock in
-          </button>
+          </SpinnerButton>
         </div>
       </div>
     </div>
