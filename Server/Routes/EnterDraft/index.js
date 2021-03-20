@@ -7,9 +7,9 @@ import { getUpcomingDraft } from '../../Components/Drafts';
 const router = Router();
 
 router.post('/', async (req, res) => {
-  // todo: eventually some sort of validation on userId here once auth system is in place
+  const { draftId, selectedRoster } = req.body;
 
-  const { userId, draftId } = req.body;
+  const { id: userId } = res.locals.userTokenObject;
 
   const mongoClient = createMongoClient();
   await mongoClient.connect();
@@ -33,6 +33,28 @@ router.post('/', async (req, res) => {
       _id: userId
     });
 
+    const validateSelectedRoster = () => {
+      const draftPlayers = upcomingDraft.players.data.items;
+
+      for (let i = 0; i < selectedRoster.length; i++) {
+        const findPlayer = draftPlayers.find(
+          (player) => player.id === selectedRoster[i]
+        );
+
+        if (!findPlayer) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    const isSelectedRosterValid = validateSelectedRoster();
+
+    if (!isSelectedRosterValid) {
+      return res.send({ type: 'error', message: 'invalid draft players' });
+    }
+
     if (isUserAlreadyEntered) {
       return res.send({
         type: 'error',
@@ -43,7 +65,8 @@ router.post('/', async (req, res) => {
     const insert = await draftParticipantsCollection.insertOne({
       _id: userId,
       draftId,
-      enterDate: Math.floor(Date.now() / 1000)
+      enterDate: Math.floor(Date.now() / 1000),
+      selectedRoster
     });
 
     if (insert.insertedCount === 1) {
