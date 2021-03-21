@@ -6,8 +6,6 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log(process.env.MONGO_URI);
-
 import Leaderboard from './Routes/Leaderboard';
 import MatchStats from './Routes/MatchStats';
 import PlayerMatches from './Routes/PlayerMatches';
@@ -19,7 +17,7 @@ import Signup from './Routes/Signup';
 import Account from './Routes/Account';
 import Logout from './Routes/Logout';
 
-import { requireAuth } from './Middleware/authMiddleware';
+import { requireUserAuth } from './Middleware/authMiddleware';
 
 const server = express();
 
@@ -28,6 +26,7 @@ const corsOptions = {
   origin: ['http://localhost:3000']
 };
 
+// Middleware
 server.use(express.json());
 server.use(cors(corsOptions));
 server.use(express.urlencoded({ extended: true }));
@@ -40,11 +39,11 @@ server.use('/player-matches', PlayerMatches);
 server.use('/match-stats', MatchStats);
 server.use('/drafts', Drafts);
 server.use('/scores', Scores);
-server.use('/drafts/enter-draft', requireAuth, EnterDraft);
+server.use('/drafts/enter-draft', requireUserAuth, EnterDraft);
 server.use('/auth/login', Login);
 server.use('/auth/signup', Signup);
-server.use('/account', requireAuth, Account);
-server.use('/auth/logout', requireAuth, Logout);
+server.use('/account', requireUserAuth, Account);
+server.use('/auth/logout', requireUserAuth, Logout);
 
 const port = process.env.PORT || 9999;
 
