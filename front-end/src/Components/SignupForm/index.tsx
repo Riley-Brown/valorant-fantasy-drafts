@@ -68,6 +68,14 @@ export default function SignupForm({
             id="email"
             value={email}
           />
+          {error && (
+            <small
+              style={{ marginTop: '5px', display: 'block' }}
+              className="text-danger"
+            >
+              {error}
+            </small>
+          )}
         </div>
         <div className="input-wrapper">
           <label htmlFor="password">Password</label>
@@ -86,24 +94,6 @@ export default function SignupForm({
             id="password2"
           />
         </div>
-        {/* <button className="btn" type="submit" style={{ position: 'relative' }}>
-          {loading ? (
-            <SpinnerSvg
-              style={{
-                textAlign: 'center',
-                position: 'absolute',
-                top: '50%',
-                width: '40px',
-                height: '40px',
-                margin: 'auto',
-                right: '50%',
-                transform: 'translate(50%, -50%)'
-              }}
-            />
-          ) : (
-            'Signup'
-          )}
-        </button> */}
         <SpinnerButton
           spinnerProps={{ style: { width: '1.5rem', height: '1.5rem' } }}
           type="submit"
