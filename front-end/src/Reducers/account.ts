@@ -23,6 +23,8 @@ export default function accountReducer(
 
   switch (type) {
     case ACTIONS.SET_ACCOUNT:
+      return payload;
+    case ACTIONS.UPDATE_ACCOUNT:
       return {
         ...state,
         ...payload
