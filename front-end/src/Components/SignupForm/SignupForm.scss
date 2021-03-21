@@ -5,6 +5,9 @@
     padding: 20px;
     .input-wrapper {
       margin-bottom: 20px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
       label {
         display: block;
         margin-bottom: 5px;
@@ -21,6 +24,7 @@
       width: 100%;
       padding: 10px;
       height: 45px;
+      margin-top: 20px;
     }
   }
 }
