@@ -1,22 +1,19 @@
-import React from 'react';
-
-export default function SelectedPlayer({
-  playerData,
-  handleRemoveSelectedPlayer,
-  empty
-}) {
+export default function SelectedPlayer({ playerData }) {
   return (
     <div className="selected-player">
       <div className="avatar">
         {playerData ? (
-          <img src={playerData.owner.metadata.avatarUrl} alt="" />
+          <img
+            src={playerData.avatarUrl}
+            alt={`${playerData.userHandleOnly} avatar`}
+          />
         ) : (
           <div className="empty-background"></div>
         )}
       </div>
       {playerData && (
         <div className="player-info">
-          <h1>{playerData.owner.metadata.platformUserHandle.split('#')[0]}</h1>
+          <h1>{playerData.userHandleOnly}</h1>
         </div>
       )}
     </div>

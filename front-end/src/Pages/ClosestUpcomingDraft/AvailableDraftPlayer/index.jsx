@@ -43,12 +43,11 @@ export default function AvailableDraftPlayer({
     >
       <img
         className="avatar"
-        src={playerData.owner.metadata.avatarUrl}
-        alt={`${playerData.owner.metadata.platformUserHandle}`}
+        src={playerData.avatarUrl}
+        alt={`${playerData.platformUserHandle}`}
       />
       <h1>
-        {playerData.rank}{' '}
-        {playerData.owner.metadata.platformUserHandle.split('#')[0]}
+        {playerData.rank} {playerData.userHandleOnly}
       </h1>
     </div>
   );
