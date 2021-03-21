@@ -1,5 +1,5 @@
 import { setAccount } from 'Actions/account';
-import { setIsAuthed } from 'Actions/global';
+import { setIsAuthed, setShowAuthModal } from 'Actions/global';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from 'Reducers';
 import './Navbar.scss';
@@ -10,30 +10,44 @@ export default function Navbar() {
   const account = useTypedSelector((state) => state.account);
   const dispatch = useDispatch();
 
+  const isAuthed = useTypedSelector((state) => state.global.isAuthed);
+
   return (
     <nav id="navbar">
       <div>
-        <h1>{account.email}</h1>
-        <h2>Your balance: ${account.balanceFormatted}</h2>
+        {isAuthed && (
+          <div style={{ display: 'flex' }}>
+            <h1>{account.email}</h1>
+            <h2>Your balance: ${account.balanceFormatted}</h2>
+          </div>
+        )}
       </div>
-
-      <button
-        onClick={async () => {
-          dispatch(setIsAuthed(false));
-          dispatch(
-            setAccount({
-              email: '',
-              balance: 0,
-              balanceFormatted: '0.00',
-              userId: ''
-            })
-          );
-          logout();
-        }}
-        className="btn"
-      >
-        Logout
-      </button>
+      {isAuthed ? (
+        <button
+          onClick={async () => {
+            dispatch(setIsAuthed(false));
+            dispatch(
+              setAccount({
+                email: '',
+                balance: 0,
+                balanceFormatted: '0.00',
+                userId: ''
+              })
+            );
+            logout();
+          }}
+          className="btn"
+        >
+          Logout
+        </button>
+      ) : (
+        <button
+          className="btn"
+          onClick={() => dispatch(setShowAuthModal(true))}
+        >
+          Login
+        </button>
+      )}
     </nav>
   );
 }

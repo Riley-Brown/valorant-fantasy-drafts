@@ -47,7 +47,7 @@ function App() {
     <>
       <ToastProvider placement="bottom-center">
         <div className="app-background" />
-        {isAuthed && <Navbar />}
+        <Navbar />
         <AuthModal />
         <Switch>
           <Route exact path="/player/:playerId" component={Player} />
