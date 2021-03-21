@@ -5,6 +5,7 @@ import { useTypedSelector } from 'Reducers';
 import './Navbar.scss';
 
 import { logout } from 'API/auth';
+import { formattedBalance } from 'Helpers';
 
 export default function Navbar() {
   const account = useTypedSelector((state) => state.account);
@@ -18,7 +19,7 @@ export default function Navbar() {
         {isAuthed && (
           <div style={{ display: 'flex' }}>
             <h1>{account.email}</h1>
-            <h2>Your balance: ${account.balanceFormatted}</h2>
+            <h2>Your balance: ${formattedBalance(account.balance)}</h2>
           </div>
         )}
       </div>
