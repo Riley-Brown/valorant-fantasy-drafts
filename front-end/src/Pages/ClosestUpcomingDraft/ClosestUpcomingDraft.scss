@@ -1,4 +1,8 @@
 #closest-upcoming-draft {
+  margin: 40px auto;
+  color: #fff;
+  max-width: 1100px;
+  padding: 0 40px;
   .lock-in-button {
     background: white;
     color: #222;
@@ -6,6 +10,83 @@
     font-size: 1.3rem;
     width: 100%;
     min-height: 75px;
-    margin-top: 40px;
+    margin-top: 20px;
+  }
+
+  .available-players-wrapper {
+    width: 100%;
+    flex: 0 1 50%;
+    @media (max-width: 1200px) {
+      flex: 1 1 auto;
+      // width: 100%;
+    }
+    .search-player-input {
+      width: 100%;
+      padding: 20px;
+      border-radius: 4px;
+      border: none;
+      margin-bottom: 20px;
+    }
+  }
+  .view-selected-roster-btn {
+    position: fixed;
+    bottom: 0;
+    background: var(--primary);
+    color: #fff;
+    width: 50%;
+    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%);
+    svg {
+      vertical-align: sub;
+      margin-left: 5px;
+    }
+  }
+  .modal-backdrop {
+    z-index: 200;
+    min-height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    .container {
+      display: flex;
+      justify-content: center;
+      .modal {
+        background: #222;
+        width: 80%;
+        border-radius: 14px;
+        margin: 10% auto;
+        padding: 20px;
+        .header {
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          position: relative;
+          h1 {
+            text-align: center;
+          }
+          button {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            color: #222;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 1.3rem;
+            border: none;
+            cursor: pointer;
+            padding: 0px;
+            line-height: unset;
+          }
+        }
+      }
+    }
   }
 }
