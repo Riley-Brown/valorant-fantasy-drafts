@@ -1,6 +1,8 @@
 import { Router } from 'express';
 const router = Router();
 
+import { requireAdminAuth } from '../../Middleware/authMiddleware';
+
 import {
   createDraft,
   getAllDrafts,
@@ -9,7 +11,7 @@ import {
   getClosestUpcomingDraft
 } from '../../Components/Drafts';
 
-router.post('/create-draft', async (req, res) => {
+router.post('/create-draft', requireAdminAuth, async (req, res) => {
   const { startDate, endDate } = req.body;
   const currentDateUnix = Date.now() / 1000;
 
