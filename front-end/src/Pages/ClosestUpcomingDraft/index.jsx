@@ -16,6 +16,7 @@ import { setShowAuthModal } from 'Actions/global';
 import { useDispatch } from 'react-redux';
 import useMatchMedia from 'Hooks/useMatchMedia';
 import SelectedRosterModal from './SelectedRosterModal';
+import { formattedInt } from 'Helpers';
 
 export default function ClosestUpcomingDraft() {
   const [draftData, setDraftData] = useState();
@@ -111,6 +112,11 @@ export default function ClosestUpcomingDraft() {
         {draftData && !Number.isNaN(days) && (
           <>
             Starts in {days === 0 ? null : 'days'} {hours}:{minutes}:{seconds}
+            {draftData.entryFee && (
+              <span style={{ marginLeft: '10px' }}>
+                Entry fee: ${formattedInt(draftData.entryFee)}
+              </span>
+            )}
           </>
         )}
       </p>
