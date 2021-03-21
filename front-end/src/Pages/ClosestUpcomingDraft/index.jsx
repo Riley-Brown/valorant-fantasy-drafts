@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useToasts } from 'react-toast-notifications';
+
 import { enterDraft, getClosestUpcomingDraft } from 'API/drafts';
 
 import AvailableDraftPlayer from './AvailableDraftPlayer';
 import SelectedRoster from './SelectedRoster';
-
-import useCountdownTimer from 'Hooks/useCountdownTimer';
-import SpinnerButton from 'Components/SpinnerButton';
-
+import SelectedRosterModal from './SelectedRosterModal';
 import './ClosestUpcomingDraft.scss';
 
-import { useToasts } from 'react-toast-notifications';
-import { useTypedSelector } from 'Reducers';
-
-import { setShowAuthModal } from 'Actions/global';
-import { useDispatch } from 'react-redux';
+import useCountdownTimer from 'Hooks/useCountdownTimer';
 import useMatchMedia from 'Hooks/useMatchMedia';
-import SelectedRosterModal from './SelectedRosterModal';
+
+import SpinnerButton from 'Components/SpinnerButton';
+
+import { useTypedSelector } from 'Reducers';
+import { setShowAuthModal, updateAccount } from 'Actions';
+
 import { formattedInt } from 'Helpers';
 
 export default function ClosestUpcomingDraft() {
@@ -82,7 +83,7 @@ export default function ClosestUpcomingDraft() {
         selectedRoster: selectedRoster.map((player) => player.id)
       });
 
-      if (enter.type === 'error') {
+      if (enter.type !== 'success') {
         addToast(<h2>{enter.message}</h2>, {
           appearance: 'error',
           autoDismiss: true,
@@ -91,6 +92,8 @@ export default function ClosestUpcomingDraft() {
       }
 
       if (enter.type === 'success') {
+        dispatch(updateAccount({ balance: enter.data.balance }));
+
         addToast(<h2>Successfully entered draft!</h2>, {
           appearance: 'success',
           autoDismiss: true,
