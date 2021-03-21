@@ -18,14 +18,17 @@ router.post('/', async (req, res) => {
     const upcomingDraft = await getUpcomingDraft(draftId);
 
     if (!upcomingDraft) {
-      return res.send({ type: 'error', message: 'Draft does not exist' });
+      return res.send({
+        type: 'draftNotExist',
+        message: 'Draft does not exist'
+      });
     }
 
     const validateSelectedRoster = () => {
       if (!Array.isArray(selectedRoster) || selectedRoster.length !== 5) {
         return false;
       }
-      const draftPlayers = upcomingDraft.players.data.items;
+      const draftPlayers = upcomingDraft.players;
 
       for (let i = 0; i < selectedRoster.length; i++) {
         const findPlayer = draftPlayers.find(
@@ -43,7 +46,10 @@ router.post('/', async (req, res) => {
     const isSelectedRosterValid = validateSelectedRoster();
 
     if (!isSelectedRosterValid) {
-      return res.send({ type: 'error', message: 'invalid draft players' });
+      return res.send({
+        type: 'invalidDraftRoster',
+        message: 'invalid draft players'
+      });
     }
 
     const draftParticipantsCollection = mongoClient
@@ -51,7 +57,10 @@ router.post('/', async (req, res) => {
       .collection(`draft-participants-${draftId}`);
 
     if (!draftParticipantsCollection) {
-      return res.send({ type: 'error', message: 'Draft does not exist' });
+      return res.send({
+        type: 'draftNotExist',
+        message: 'Draft does not exist'
+      });
     }
 
     const isUserAlreadyEntered = await draftParticipantsCollection.findOne({
@@ -60,8 +69,23 @@ router.post('/', async (req, res) => {
 
     if (isUserAlreadyEntered) {
       return res.send({
-        type: 'error',
-        message: 'User is already entered in draft'
+        type: 'alreadyEntered',
+        message: 'Already entered in this draft'
+      });
+    }
+
+    const usersCollection = mongoClient
+      .db('valorant-draft-db')
+      .collection('users');
+
+    const user = await usersCollection.findOne({ _id: userId });
+
+    const { entryFee } = upcomingDraft;
+
+    if (entryFee && user.balance < entryFee) {
+      return res.send({
+        type: 'insufficientBalance',
+        message: 'Your current balance is too low to enter this draft'
       });
     }
 
@@ -71,24 +95,29 @@ router.post('/', async (req, res) => {
       _id: userId,
       draftId,
       enterDate,
+      entryFee,
       selectedRoster,
       userId
     });
 
     if (insert.insertedCount === 1) {
-      const usersCollection = mongoClient
-        .db('valorant-draft-db')
-        .collection('users');
-
-      // Update user's drafts array in DB
-      await usersCollection.findOneAndUpdate(
+      // Update user's drafts array and balance in DB
+      const updateUser = await usersCollection.findOneAndUpdate(
         { _id: userId },
-        { $push: { drafts: { draftId, enterDate } } }
+        {
+          $inc: { balance: -entryFee },
+          $push: { drafts: { draftId, enterDate, entryFee } }
+        },
+        // return updated updated document values
+        { returnOriginal: false }
       );
 
       res.send({
         type: 'success',
-        message: 'User successfully entered into draft'
+        message: 'User successfully entered into draft',
+        data: {
+          balance: updateUser.value.balance
+        }
       });
     } else {
       res.send({
@@ -98,7 +127,7 @@ router.post('/', async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send({ err: 'something went wrong entering draft' });
+    res.send({ type: 'error', err: 'something went wrong entering draft' });
   } finally {
     console.log('finally enter draft');
     await mongoClient.close();
