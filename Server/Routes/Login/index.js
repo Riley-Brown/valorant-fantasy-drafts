@@ -22,7 +22,9 @@ router.post('/', async (req, res) => {
       return res.send({ type: 'error', message: 'Invalid email or password' });
     }
 
-    const findUser = await usersCollection.findOne({ email });
+    const findUser = await usersCollection.findOne({
+      email: email.toLowerCase()
+    });
 
     if (!findUser) {
       return res.send({ type: 'error', message: 'User does not exist' });
