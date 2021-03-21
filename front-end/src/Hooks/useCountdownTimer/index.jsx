@@ -10,7 +10,7 @@ export default function useCountdownTimer({ unixTimestamp }) {
     const seconds = Math.floor(difference % 60);
 
     return {
-      days: days < 10 ? `0${days}` : days,
+      days: days !== 0 && days < 10 ? `0${days}` : days,
       hours: hours < 10 ? `0${hours}` : hours,
       minutes: minutes < 10 ? `0${minutes}` : minutes,
       seconds: seconds < 10 ? `0${seconds}` : seconds
