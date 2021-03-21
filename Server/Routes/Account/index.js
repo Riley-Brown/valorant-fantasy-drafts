@@ -1,23 +1,15 @@
 import { Router } from 'express';
 const router = Router();
 
-import { createMongoClient } from '../../DB';
+import { getUsersCollection } from '../../DB/users';
 
 router.get('/', async (req, res) => {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
+  const { usersCollection, mongoClient } = await getUsersCollection();
 
   const { id: userId } = res.locals.userTokenObject;
-  console.log({ userId });
 
   try {
-    const usersCollection = mongoClient
-      .db('valorant-draft-db')
-      .collection('users');
-
     const userAccount = await usersCollection.findOne({ _id: userId });
-
-    console.log(userAccount);
 
     res.send({
       type: 'ok',
