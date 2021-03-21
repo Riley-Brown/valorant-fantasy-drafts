@@ -14,9 +14,11 @@ import { useTypedSelector } from 'Reducers';
 
 import { setShowAuthModal } from 'Actions/global';
 import { useDispatch } from 'react-redux';
+import useMatchMedia from 'Hooks/useMatchMedia';
+import SelectedRosterModal from './SelectedRosterModal';
 
 export default function ClosestUpcomingDraft() {
-  const [closestDraft, setClosestDraft] = useState();
+  const [draftData, setDraftData] = useState();
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -26,9 +28,11 @@ export default function ClosestUpcomingDraft() {
 
   const { addToast } = useToasts();
 
+  const mobile = useMatchMedia({ width: 1200 });
+
   useEffect(() => {
     getClosestUpcomingDraft().then((draft) => {
-      setClosestDraft(draft);
+      setDraftData(draft);
     });
   }, []);
 
@@ -48,7 +52,7 @@ export default function ClosestUpcomingDraft() {
   };
 
   const { days, hours, minutes, seconds } = useCountdownTimer({
-    unixTimestamp: closestDraft?.startDate
+    unixTimestamp: draftData?.startDate
   });
 
   const [filteredPlayers, setFilteredPlayers] = useState([]);
@@ -57,7 +61,7 @@ export default function ClosestUpcomingDraft() {
   useEffect(() => {
     if (searchFilter) {
       setFilteredPlayers(
-        closestDraft.players.data.items.filter((player) =>
+        draftData.players.filter((player) =>
           player.id.toLowerCase().includes(searchFilter.toLowerCase())
         )
       );
@@ -73,7 +77,7 @@ export default function ClosestUpcomingDraft() {
 
       setLoading(true);
       const enter = await enterDraft({
-        draftId: closestDraft._id,
+        draftId: draftData._id,
         selectedRoster: selectedRoster.map((player) => player.id)
       });
 
@@ -101,71 +105,64 @@ export default function ClosestUpcomingDraft() {
   };
 
   return (
-    <div
-      id="closest-upcoming-draft"
-      style={{
-        margin: '40px',
-        maxWidth: '1100px',
-        margin: '40px auto',
-        color: 'white'
-      }}
-    >
+    <div id="closest-upcoming-draft">
       <h1 style={{ marginBottom: '5px' }}>Daily Radiant fantasy draft</h1>
       <p style={{ marginBottom: '20px' }}>
-        Starts in {days} days {hours}:{minutes}:{seconds}
+        {draftData && !Number.isNaN(days) && (
+          <>
+            Starts in {days === 0 ? null : 'days'} {hours}:{minutes}:{seconds}
+          </>
+        )}
       </p>
       <h1 style={{ color: '#fff', marginBottom: '10px' }}>Available players</h1>
       <div className="wrapper" style={{ display: 'flex' }}>
-        <div style={{ flex: '0 1 50%' }}>
+        <div className="available-players-wrapper">
           <input
-            style={{
-              width: '100%',
-              padding: '20px',
-              borderRadius: '4px',
-              border: 'none',
-              marginBottom: '20px'
-            }}
+            className="search-player-input"
             onChange={(e) => setSearchFilter(e.target.value)}
             placeholder="Search for player"
           />
 
-          {closestDraft?.players && (
+          {draftData?.players && (
             <div>
-              {(searchFilter
-                ? filteredPlayers
-                : closestDraft.players.data.items
-              ).map((player) => (
-                <AvailableDraftPlayer
-                  selectedRoster={selectedRoster}
-                  playerData={player}
-                  handleRemoveSelectedPlayer={handleRemoveSelectedPlayer}
-                  handleSelectPlayer={handleSelectPlayer}
-                />
-              ))}
+              {(searchFilter ? filteredPlayers : draftData.players).map(
+                (player) => (
+                  <AvailableDraftPlayer
+                    selectedRoster={selectedRoster}
+                    playerData={player}
+                    handleRemoveSelectedPlayer={handleRemoveSelectedPlayer}
+                    handleSelectPlayer={handleSelectPlayer}
+                  />
+                )
+              )}
             </div>
           )}
         </div>
-        <div style={{ marginLeft: '100px', flex: 'auto' }}>
-          <div
-            className="sticky-wrapper"
-            style={{ position: 'sticky', top: isAuthed ? '135px' : '25px' }}
-          >
-            <SelectedRoster
-              selectedRoster={selectedRoster}
-              setSelectedRoster={setSelectedRoster}
-              handleRemoveSelectedPlayer={handleRemoveSelectedPlayer}
-            />
-            <SpinnerButton
-              className="btn lock-in-button"
-              spinnerProps={{ style: { color: '#2663f2' } }}
-              loading={loading}
-              disabled={selectedRoster.length < 5}
-              onClick={handleEnterDraft}
+        {mobile ? (
+          <SelectedRosterModal
+            loading={loading}
+            handleEnterDraft={handleEnterDraft}
+            selectedRoster={selectedRoster}
+          />
+        ) : (
+          <div style={{ marginLeft: '100px', flex: 'auto' }}>
+            <div
+              className="sticky-wrapper"
+              style={{ position: 'sticky', top: '115px' }}
             >
-              Lock in
-            </SpinnerButton>
+              <SelectedRoster selectedRoster={selectedRoster} />
+              <SpinnerButton
+                className="btn lock-in-button"
+                spinnerProps={{ style: { color: '#2663f2' } }}
+                loading={loading}
+                disabled={selectedRoster.length < 5}
+                onClick={handleEnterDraft}
+              >
+                Lock in
+              </SpinnerButton>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
