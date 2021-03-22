@@ -10,6 +10,7 @@ interface FadeProps {
   onEntered?: () => any;
   onExit?: () => any;
   onExited?: () => any;
+  onExiting?: () => any;
 }
 
 const Fade: React.FC<FadeProps> = ({
@@ -18,7 +19,8 @@ const Fade: React.FC<FadeProps> = ({
   onEnter,
   onEntered,
   onExit,
-  onExited
+  onExited,
+  onExiting
 }: FadeProps) => {
   return (
     <CSSTransition
@@ -31,6 +33,7 @@ const Fade: React.FC<FadeProps> = ({
       onExit={onExit}
       onEntered={onEntered}
       onExited={onExited}
+      onExiting={onExiting}
     >
       {children}
     </CSSTransition>
