@@ -18,7 +18,6 @@
     flex: 0 1 50%;
     @media (max-width: 1200px) {
       flex: 1 1 auto;
-      // width: 100%;
     }
     .search-player-input {
       width: 100%;
@@ -31,12 +30,14 @@
   .view-selected-roster-btn {
     position: fixed;
     bottom: 0;
-    background: var(--primary);
+    background: #222;
     color: #fff;
-    width: 50%;
+    width: 80%;
+    max-width: 500px;
     z-index: 10;
     left: 50%;
     transform: translateX(-50%);
+    padding: 15px;
     svg {
       vertical-align: sub;
       margin-left: 5px;
@@ -55,11 +56,15 @@
     .container {
       display: flex;
       justify-content: center;
+      width: 80%;
+      margin: 10% auto;
+      @media (max-width: 1024px) {
+        margin: 50px auto;
+      }
       .modal {
         background: #222;
-        width: 80%;
+        width: 100%;
         border-radius: 14px;
-        margin: 10% auto;
         padding: 20px;
         .header {
           justify-content: space-between;
@@ -68,6 +73,9 @@
           position: relative;
           h1 {
             text-align: center;
+            @media (max-width: 768px) {
+              font-size: 1.5rem;
+            }
           }
           button {
             position: absolute;
@@ -84,6 +92,13 @@
             cursor: pointer;
             padding: 0px;
             line-height: unset;
+          }
+        }
+        .modal-body {
+          h1 {
+            @media (max-width: 768px) {
+              font-size: 1.5rem;
+            }
           }
         }
       }
