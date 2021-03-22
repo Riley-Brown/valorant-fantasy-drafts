@@ -21,7 +21,7 @@ export const requireUserAuth = async (req, res, next) => {
   const token = req.cookies.userSession;
 
   try {
-    if (!token) return handleSendAuthError();
+    if (!token) return handleSendAuthError(res);
     res.locals.userTokenObject = await handleVerifyToken(token);
     next();
   } catch (err) {
@@ -36,7 +36,7 @@ export const requireAdminAuth = async (req, res, next) => {
   const { usersCollection, mongoClient } = await getUsersCollection();
 
   try {
-    if (!token) return handleSendAuthError();
+    if (!token) return handleSendAuthError(res);
 
     const decodedToken = await handleVerifyToken(token);
 
