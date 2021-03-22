@@ -11,7 +11,6 @@ export default function UpcomingDraft() {
 
   useEffect(() => {
     getUpcomingDraft(draftId).then((draftData) => {
-      console.log(draftData);
       setDraftData(draftData);
     });
   }, []);
