@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import SelectedRoster from '../SelectedRoster';
 
@@ -18,11 +18,29 @@ export default function SelectedRosterModal({
 }) {
   const [show, setShow] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  const hideOverflow = () => {
+    document.body.style.overflowY = 'hidden';
+    (document.querySelector('.modal-backdrop') as HTMLElement).style.overflowY =
+      'auto';
+  };
+
+  const showOverflow = () => {
+    document.body.style.overflowY = '';
+    (document.querySelector('.modal-backdrop') as HTMLElement).style.overflowY =
+      'hidden';
+  };
+
   return (
     <div>
-      <Fade inProp={show}>
-        <div className="modal-backdrop">
-          <div className="container">
+      <Fade inProp={show} onEntered={hideOverflow} onExiting={showOverflow}>
+        <div className="modal-backdrop" onClick={() => setShow(false)}>
+          <div className="container" onClick={(e) => e.stopPropagation()}>
             <div className="modal">
               <div className="header">
                 <h1>Selected roster</h1>
