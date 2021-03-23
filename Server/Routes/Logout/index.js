@@ -5,7 +5,7 @@ router.post('/', async (req, res) => {
   try {
     res.cookie('userSession', '', {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'development' ? false : true,
       sameSite: 'none'
     });
     res.send({ type: 'ok', message: 'successfully signed out' });

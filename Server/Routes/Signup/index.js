@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
       res.cookie('userSession', token, {
         httpOnly: true,
         expires: new Date(Date.now() + 90000000),
-        secure: true,
+        secure: process.env.NODE_ENV === 'development' ? false : true,
         sameSite: 'none'
       });
 
