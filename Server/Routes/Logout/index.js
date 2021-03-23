@@ -6,7 +6,8 @@ router.post('/', async (req, res) => {
     res.cookie('userSession', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'development' ? false : true,
-      sameSite: 'none'
+      sameSite: 'none',
+      domain: '.riley.gg'
     });
     res.send({ type: 'ok', message: 'successfully signed out' });
   } catch (err) {
