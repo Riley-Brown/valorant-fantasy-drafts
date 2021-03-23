@@ -23,7 +23,10 @@ const server = express();
 
 const corsOptions = {
   credentials: true,
-  origin: ['http://localhost:3000']
+  origin: [
+    'http://localhost:3000',
+    'https://romantic-varahamihira-837530.netlify.app'
+  ]
 };
 
 // Middleware
