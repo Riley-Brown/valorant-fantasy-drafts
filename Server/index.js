@@ -26,7 +26,8 @@ const corsOptions = {
   credentials: true,
   origin: [
     'http://localhost:3000',
-    'https://romantic-varahamihira-837530.netlify.app'
+    'https://romantic-varahamihira-837530.netlify.app',
+    'https://valorant-draft.riley.gg'
   ]
 };
 
