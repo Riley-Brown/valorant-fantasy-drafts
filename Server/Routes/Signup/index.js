@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
         expires: new Date(Date.now() + 90000000),
         secure: process.env.NODE_ENV === 'development' ? false : true,
         sameSite: 'none',
-        domain: '.riley.gg'
+        domain: 'riley.gg'
       });
 
       res.send({ type: 'ok', message: 'User successfully signed up' });

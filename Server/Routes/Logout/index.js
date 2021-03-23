@@ -7,7 +7,7 @@ router.post('/', async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'development' ? false : true,
       sameSite: 'none',
-      domain: '.riley.gg'
+      domain: 'riley.gg'
     });
     res.send({ type: 'ok', message: 'successfully signed out' });
   } catch (err) {
