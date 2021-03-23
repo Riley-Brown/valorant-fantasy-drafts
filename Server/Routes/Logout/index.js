@@ -7,7 +7,7 @@ router.post('/', async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'development' ? false : true,
       sameSite: 'none',
-      domain: 'valorant-draft.riley.gg'
+      domain: 'https://valorant-draft.riley.gg'
     });
     res.send({ type: 'ok', message: 'successfully signed out' });
   } catch (err) {
