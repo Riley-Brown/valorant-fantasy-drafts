@@ -3,7 +3,7 @@ import { getLeaderboard } from '../Leaderboard';
 
 import { v4 as uuid } from 'uuid';
 
-export async function createDraft({ startDate, endDate }) {
+export async function createDraft({ startDate, endDate, entryFee }) {
   const mongoClient = createMongoClient();
   await mongoClient.connect();
 
@@ -13,11 +13,14 @@ export async function createDraft({ startDate, endDate }) {
 
   const draftId = uuid();
 
+  console.log({ draftId });
+
   const insert = await collection.insertOne({
     _id: draftId,
-    startDate,
     endDate,
-    players
+    entryFee: entryFee || 0,
+    players,
+    startDate
   });
 
   await mongoClient

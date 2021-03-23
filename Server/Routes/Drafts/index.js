@@ -12,7 +12,7 @@ import {
 } from '../../Components/Drafts';
 
 router.post('/create-draft', requireAdminAuth, async (req, res) => {
-  const { startDate, endDate } = req.body;
+  const { startDate, endDate, entryFee } = req.body;
   const currentDateUnix = Date.now() / 1000;
 
   if (!startDate || !endDate) {
@@ -45,8 +45,9 @@ router.post('/create-draft', requireAdminAuth, async (req, res) => {
 
   try {
     await createDraft({
-      startDate: Math.floor(startDate),
-      endDate: Math.floor(endDate)
+      entryFee,
+      endDate: Math.floor(endDate),
+      startDate: Math.floor(startDate)
     });
     res.send({ type: 'ok', message: 'Draft created' });
   } catch (err) {
