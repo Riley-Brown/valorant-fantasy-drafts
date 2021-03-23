@@ -40,7 +40,9 @@ router.post('/', async (req, res) => {
 
       res.cookie('userSession', token, {
         httpOnly: true,
-        expires: new Date(Date.now() + 90000000)
+        expires: new Date(Date.now() + 90000000),
+        secure: true,
+        sameSite: 'none'
       });
 
       res.send({ type: 'ok', message: 'User successfully signed up' });

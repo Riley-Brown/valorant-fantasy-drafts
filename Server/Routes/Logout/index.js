@@ -4,7 +4,9 @@ const router = Router();
 router.post('/', async (req, res) => {
   try {
     res.cookie('userSession', '', {
-      httpOnly: true
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
     });
     res.send({ type: 'ok', message: 'successfully signed out' });
   } catch (err) {
