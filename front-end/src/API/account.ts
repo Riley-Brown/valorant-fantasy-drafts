@@ -1,5 +1,7 @@
+import { API_ROOT } from './root';
+
 export async function getAccount() {
-  const res = await fetch('http://localhost:9999/account', {
+  const res = await fetch(`${API_ROOT}/account`, {
     method: 'GET',
     credentials: 'include'
   });

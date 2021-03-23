@@ -1,5 +1,7 @@
+import { API_ROOT } from './root';
+
 export async function login({ email, password }) {
-  const res = await fetch('http://localhost:9999/auth/login', {
+  const res = await fetch(`${API_ROOT}/auth/login`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -12,7 +14,7 @@ export async function login({ email, password }) {
 }
 
 export async function signup({ email, password }) {
-  const res = await fetch('http://localhost:9999/auth/signup', {
+  const res = await fetch(`${API_ROOT}/auth/signup`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -25,7 +27,7 @@ export async function signup({ email, password }) {
 }
 
 export async function logout() {
-  const res = await fetch('http://localhost:9999/auth/logout', {
+  const res = await fetch(`${API_ROOT}/auth/logout`, {
     method: 'POST',
     credentials: 'include'
   });

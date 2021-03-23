@@ -1,5 +1,7 @@
+import { API_ROOT } from './root';
+
 export async function getUpcomingDrafts() {
-  const res = await fetch(`http://localhost:9999/drafts/upcoming`, {
+  const res = await fetch(`${API_ROOT}/drafts/upcoming`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -10,35 +12,29 @@ export async function getUpcomingDrafts() {
 }
 
 export async function getUpcomingDraft(draftId) {
-  const res = await fetch(
-    `http://localhost:9999/drafts/upcoming/id/${draftId}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+  const res = await fetch(`${API_ROOT}/drafts/upcoming/id/${draftId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
     }
-  );
+  });
 
   return res.json();
 }
 
 export async function getClosestUpcomingDraft() {
-  const res = await fetch(
-    `http://localhost:9999/drafts/upcoming/closest-draft`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+  const res = await fetch(`${API_ROOT}/drafts/upcoming/closest-draft`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
     }
-  );
+  });
 
   return res.json();
 }
 
 export async function enterDraft({ draftId, selectedRoster }) {
-  const res = await fetch(`http://localhost:9999/drafts/enter-draft`, {
+  const res = await fetch(`${API_ROOT}/drafts/enter-draft`, {
     credentials: 'include',
     method: 'POST',
     headers: {
