@@ -1,8 +1,7 @@
 import MongoDB from 'mongodb';
 
 if (process.env.NODE_ENV === 'development') {
-  dotenv.config();
-  require('dotenv').config();
+  import('dotenv').then((dotenv) => dotenv.config());
 }
 
 export const createMongoClient = () =>
