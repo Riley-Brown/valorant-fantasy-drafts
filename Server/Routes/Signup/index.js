@@ -42,8 +42,7 @@ router.post('/', async (req, res) => {
         httpOnly: true,
         expires: new Date(Date.now() + 90000000),
         secure: process.env.NODE_ENV === 'development' ? false : true,
-        sameSite: 'none',
-        domain: 'https://valorant-draft.riley.gg'
+        sameSite: 'none'
       });
 
       res.send({ type: 'ok', message: 'User successfully signed up' });
