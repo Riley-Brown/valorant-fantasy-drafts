@@ -3,8 +3,10 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
-import dotenv from 'dotenv';
-dotenv.config();
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config();
+  require('dotenv').config();
+}
 
 import Leaderboard from './Routes/Leaderboard';
 import MatchStats from './Routes/MatchStats';
