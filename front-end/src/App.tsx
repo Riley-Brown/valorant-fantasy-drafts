@@ -11,6 +11,7 @@ import UpcomingDraft from 'Pages/UpcomingDraft';
 import ClosestUpcomingDraft from 'Pages/ClosestUpcomingDraft';
 import Login from 'Pages/Login';
 import Signup from 'Pages/Signup';
+import Admin from 'Pages/Admin';
 
 import AuthModal from 'Components/AuthModal';
 import Navbar from 'Components/Navbar';
@@ -63,6 +64,7 @@ function App() {
           />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signup" component={Signup} />
+          {isAuthed && <Route exact path="/admin" component={Admin} />}
           {/* <Route exact path="/" component={UpcomingDrafts} /> */}
           <Route path="/" component={ClosestUpcomingDraft} />
         </Switch>
