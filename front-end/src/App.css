@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-backdrop {
+  z-index: 200;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
