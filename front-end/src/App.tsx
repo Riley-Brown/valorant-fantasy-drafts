@@ -6,12 +6,12 @@ import { ToastProvider } from 'react-toast-notifications';
 
 import Player from 'Pages/Player';
 import MatchStats from 'Pages/MatchStats';
-// import UpcomingDrafts from 'Pages/UpcomingDrafts';
 import UpcomingDraft from 'Pages/UpcomingDraft';
 import ClosestUpcomingDraft from 'Pages/ClosestUpcomingDraft';
 import Login from 'Pages/Login';
 import Signup from 'Pages/Signup';
 import Admin from 'Pages/Admin';
+import Account from 'Pages/Account';
 
 import AuthModal from 'Components/AuthModal';
 import Navbar from 'Components/Navbar';
@@ -64,8 +64,8 @@ function App() {
           />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signup" component={Signup} />
-          {isAuthed && <Route exact path="/admin" component={Admin} />}
-          {/* <Route exact path="/" component={UpcomingDrafts} /> */}
+          <Route exact path="/admin" component={Admin} />
+          <Route exact path="/account" component={Account} />
           <Route path="/" component={ClosestUpcomingDraft} />
         </Switch>
       </ToastProvider>
