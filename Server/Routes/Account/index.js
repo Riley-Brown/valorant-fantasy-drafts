@@ -15,8 +15,10 @@ router.get('/', async (req, res) => {
       type: 'ok',
       data: {
         balance: userAccount.balance,
+        drafts: (userAccount.drafts || []).reverse(),
         email: userAccount.email,
-        isAdmin: userAccount.isAdmin
+        isAdmin: userAccount.isAdmin,
+        signupDate: userAccount.signupDate
       }
     });
   } catch (err) {
