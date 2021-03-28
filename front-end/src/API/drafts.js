@@ -45,3 +45,16 @@ export async function enterDraft({ draftId, selectedRoster }) {
 
   return res.json();
 }
+
+export async function createDraft({ startDate, endDate, entryFee }) {
+  const res = await fetch(`${API_ROOT}/drafts/create-draft`, {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ startDate, endDate, entryFee })
+  });
+
+  return res.json();
+}
