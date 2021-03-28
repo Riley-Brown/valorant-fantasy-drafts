@@ -1,0 +1,42 @@
+#account {
+  color: #fff;
+  max-width: 900px;
+  margin: 40px auto;
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  .account-section {
+    background: #222;
+    padding: 30px;
+    border-radius: 4px;
+    margin-bottom: 40px;
+    margin: 0 50px 40px;
+    @media (max-width: 768px) {
+      margin: 0 25px 40px;
+    }
+    ul {
+      list-style: none;
+      .wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        li:first-of-type {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  .account-drafts {
+    .draft {
+      background: #333;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 4px;
+      .selected-roster-title {
+        margin: 20px 0;
+      }
+    }
+  }
+}
