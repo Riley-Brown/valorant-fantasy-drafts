@@ -28,11 +28,12 @@ router.post('/', async (req, res) => {
       if (!Array.isArray(selectedRoster) || selectedRoster.length !== 5) {
         return false;
       }
+
       const draftPlayers = upcomingDraft.players;
 
       for (let i = 0; i < selectedRoster.length; i++) {
         const findPlayer = draftPlayers.find(
-          (player) => player.id === selectedRoster[i]
+          (player) => player.id === selectedRoster[i].id
         );
 
         if (!findPlayer) {
@@ -106,7 +107,7 @@ router.post('/', async (req, res) => {
         { _id: userId },
         {
           $inc: { balance: -entryFee },
-          $push: { drafts: { draftId, enterDate, entryFee } }
+          $push: { drafts: { draftId, enterDate, entryFee, selectedRoster } }
         },
         // return updated updated document values
         { returnOriginal: false }
@@ -116,7 +117,8 @@ router.post('/', async (req, res) => {
         type: 'success',
         message: 'User successfully entered into draft',
         data: {
-          balance: updateUser.value.balance
+          balance: updateUser.value.balance,
+          drafts: updateUser.value.drafts
         }
       });
     } else {
