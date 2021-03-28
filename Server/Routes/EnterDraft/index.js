@@ -118,7 +118,7 @@ router.post('/', async (req, res) => {
         message: 'User successfully entered into draft',
         data: {
           balance: updateUser.value.balance,
-          drafts: updateUser.value.drafts
+          drafts: updateUser.value.drafts.reverse()
         }
       });
     } else {
