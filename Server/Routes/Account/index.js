@@ -14,8 +14,9 @@ router.get('/', async (req, res) => {
     res.send({
       type: 'ok',
       data: {
+        balance: userAccount.balance,
         email: userAccount.email,
-        balance: userAccount.balance
+        isAdmin: userAccount.isAdmin
       }
     });
   } catch (err) {
