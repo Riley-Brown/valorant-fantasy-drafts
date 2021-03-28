@@ -1,2 +1,3 @@
 export const SET_IS_AUTHED = 'SET_IS_AUTHED';
 export const SET_SHOW_AUTH_MODAL = 'SET_SHOW_AUTH_MODAL';
+export const SET_AUTH_LOGIN_TYPE = 'SET_AUTH_LOGIN_TYPE';

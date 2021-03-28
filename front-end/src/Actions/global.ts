@@ -9,3 +9,8 @@ export const setShowAuthModal = (payload: boolean) => ({
   type: ACTIONS.SET_SHOW_AUTH_MODAL,
   payload
 });
+
+export const setAuthLoginType = (payload: 'signup' | 'login') => ({
+  type: ACTIONS.SET_AUTH_LOGIN_TYPE,
+  payload
+});

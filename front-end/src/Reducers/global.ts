@@ -4,11 +4,13 @@ import { Action } from 'redux';
 export type GlobalStateTypes = {
   isAuthed: boolean;
   showAuthModal: boolean;
+  loginType: 'signup' | 'login';
 };
 
 const initialState: GlobalStateTypes = {
   isAuthed: false,
-  showAuthModal: false
+  showAuthModal: false,
+  loginType: 'signup'
 };
 
 export default function globalReducer(
@@ -27,6 +29,11 @@ export default function globalReducer(
       return {
         ...state,
         showAuthModal: payload
+      };
+    case ACTIONS.SET_AUTH_LOGIN_TYPE:
+      return {
+        ...state,
+        loginType: payload
       };
     default:
       return state;

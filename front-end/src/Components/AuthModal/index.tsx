@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import './AuthModal.scss';
 
-import { setShowAuthModal } from 'Actions/global';
+import { setAuthLoginType, setShowAuthModal } from 'Actions/global';
 import { useTypedSelector } from 'Reducers';
 
 import trollLogo from 'Assets/troll-logo.png';
@@ -18,7 +18,7 @@ export default function AuthModal() {
 
   const dispatch = useDispatch();
 
-  const [loginType, setLoginType] = useState<'signup' | 'login'>('signup');
+  const loginType = useTypedSelector((state) => state.global.loginType);
 
   return (
     <div>
@@ -57,7 +57,7 @@ export default function AuthModal() {
                       Don't have an account?{' '}
                       <button
                         className="btn"
-                        onClick={() => setLoginType('signup')}
+                        onClick={() => dispatch(setAuthLoginType('signup'))}
                       >
                         Signup
                       </button>
@@ -74,7 +74,7 @@ export default function AuthModal() {
                       Already have an account?{' '}
                       <button
                         className="btn"
-                        onClick={() => setLoginType('login')}
+                        onClick={() => dispatch(setAuthLoginType('login'))}
                       >
                         Login
                       </button>
