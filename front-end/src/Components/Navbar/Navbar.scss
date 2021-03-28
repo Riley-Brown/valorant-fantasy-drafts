@@ -8,12 +8,91 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  h1 {
-    margin-right: 20px;
+  .register {
+    min-width: 150px;
+    color: white;
+    background-color: var(--primary);
   }
   .btn {
     min-width: 150px;
     color: white;
-    background-color: var(--primary);
+  }
+  #account-dropdown {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: relative;
+    .email {
+      font-size: 1.2rem;
+    }
+    .avatar {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin: 0 10px;
+    }
+    .dropdown {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      z-index: 10;
+      border-radius: 4px;
+      box-shadow: rgba(0, 0, 0, 0.4) 0px 6px 12px,
+        rgba(0, 0, 0, 0.23) 0px 6px 12px;
+      animation: grow 200ms forwards;
+      transform-origin: top;
+      background: #fff;
+      color: #222;
+      cursor: default;
+      li {
+        list-style: none;
+      }
+      a,
+      button {
+        background: rgba(0, 0, 0, 0.05);
+        width: 100%;
+        color: #222;
+        display: block;
+        padding: 10px 20px;
+        font-weight: 600;
+        &:hover,
+        &:focus {
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+      a {
+        text-decoration: none;
+      }
+      .logout-btn {
+        color: #222;
+        text-align: left;
+        font-weight: 600;
+        padding: 10px 20px;
+        display: block;
+      }
+      h2 {
+        font-size: 1rem;
+        font-weight: 400;
+        padding: 10px 20px;
+      }
+      @media (max-width: 768px) {
+        left: initial;
+        right: 0.75rem;
+      }
+      @keyframes grow {
+        from {
+          transform: scale(1, 0);
+        }
+        to {
+          transform: scale(1, 1);
+        }
+      }
+    }
   }
 }

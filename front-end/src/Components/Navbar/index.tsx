@@ -1,11 +1,17 @@
-import { setAccount } from 'Actions/account';
-import { setIsAuthed, setShowAuthModal } from 'Actions/global';
+import {
+  setAuthLoginType,
+  setIsAuthed,
+  setShowAuthModal,
+  logout as logoutAction
+} from 'Actions';
+
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from 'Reducers';
 import './Navbar.scss';
 
-import { logout } from 'API/auth';
-import { formattedInt } from 'Helpers';
+import { logout } from 'API';
+
+import AccountDropdown from './AccountDropdown';
 
 export default function Navbar() {
   const account = useTypedSelector((state) => state.account);
@@ -14,27 +20,13 @@ export default function Navbar() {
   const isAuthed = useTypedSelector((state) => state.global.isAuthed);
 
   return (
-    <nav id="navbar">
-      <div>
-        {isAuthed && (
-          <div style={{ display: 'flex' }}>
-            <h1>{account.email}</h1>
-            <h2>Your balance: ${formattedInt(account.balance)}</h2>
-          </div>
-        )}
-      </div>
+    <nav role="navigation" id="navbar">
+      <div>{isAuthed && <AccountDropdown />}</div>
       {isAuthed ? (
         <button
           onClick={async () => {
             dispatch(setIsAuthed(false));
-            dispatch(
-              setAccount({
-                email: '',
-                balance: 0,
-                balanceFormatted: '0.00',
-                userId: ''
-              })
-            );
+            dispatch(logoutAction());
             logout();
           }}
           className="btn"
@@ -42,12 +34,29 @@ export default function Navbar() {
           Logout
         </button>
       ) : (
-        <button
-          className="btn"
-          onClick={() => dispatch(setShowAuthModal(true))}
-        >
-          Login
-        </button>
+        <>
+          <div>
+            <button
+              className="btn"
+              onClick={() => {
+                dispatch(setAuthLoginType('login'));
+                dispatch(setShowAuthModal(true));
+              }}
+              style={{ marginRight: '20px' }}
+            >
+              Login
+            </button>
+            <button
+              className="btn register"
+              onClick={() => {
+                dispatch(setAuthLoginType('signup'));
+                dispatch(setShowAuthModal(true));
+              }}
+            >
+              Register
+            </button>
+          </div>
+        </>
       )}
     </nav>
   );
