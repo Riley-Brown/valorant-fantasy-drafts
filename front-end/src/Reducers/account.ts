@@ -4,14 +4,18 @@ import { Action } from 'redux';
 export type AccountStateTypes = {
   balance: number;
   balanceFormatted: string;
+  drafts: any[]; // todo: properly type check this eventually
   email: string;
+  isAdmin: boolean;
   userId: string;
 };
 
 const initialState: AccountStateTypes = {
   balance: 0,
   balanceFormatted: '0.00',
+  drafts: [],
   email: '',
+  isAdmin: false,
   userId: ''
 };
 

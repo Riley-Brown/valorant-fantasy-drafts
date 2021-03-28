@@ -40,9 +40,11 @@ export default function SignupForm({
       const account = await getAccount();
       dispatch(
         setAccount({
-          email: account.data.email,
           balance: account.data.balance,
           balanceFormatted: `$${account.data.balance * 100}`,
+          drafts: [],
+          email: account.data.email,
+          isAdmin: false,
           userId: account.data._id
         })
       );
