@@ -78,9 +78,10 @@ export default function ClosestUpcomingDraft() {
       }
 
       setLoading(true);
+
       const enter = await enterDraft({
         draftId: draftData._id,
-        selectedRoster: selectedRoster.map((player) => player.id)
+        selectedRoster
       });
 
       if (enter.type !== 'success') {
@@ -92,7 +93,12 @@ export default function ClosestUpcomingDraft() {
       }
 
       if (enter.type === 'success') {
-        dispatch(updateAccount({ balance: enter.data.balance }));
+        dispatch(
+          updateAccount({
+            balance: enter.data.balance,
+            drafts: enter.data.drafts
+          })
+        );
 
         addToast(<h2>Successfully entered draft!</h2>, {
           appearance: 'success',
