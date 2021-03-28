@@ -7,6 +7,7 @@ export type AccountStateTypes = {
   drafts: any[]; // todo: properly type check this eventually
   email: string;
   isAdmin: boolean;
+  signupDate: number;
   userId: string;
 };
 
@@ -16,6 +17,7 @@ const initialState: AccountStateTypes = {
   drafts: [],
   email: '',
   isAdmin: false,
+  signupDate: 0,
   userId: ''
 };
 

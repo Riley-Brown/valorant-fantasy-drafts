@@ -45,6 +45,7 @@ export default function SignupForm({
           drafts: [],
           email: account.data.email,
           isAdmin: false,
+          signupDate: account.data.signupDate,
           userId: account.data._id
         })
       );

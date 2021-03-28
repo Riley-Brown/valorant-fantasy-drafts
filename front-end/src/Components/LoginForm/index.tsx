@@ -44,6 +44,7 @@ export default function LoginForm({
           drafts: account.data.drafts,
           email: account.data.email,
           isAdmin: account.data.isAdmin,
+          signupDate: account.data.signupDate,
           userId: account.data._id
         })
       );
