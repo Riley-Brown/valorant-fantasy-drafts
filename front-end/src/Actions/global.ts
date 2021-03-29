@@ -14,3 +14,13 @@ export const setAuthLoginType = (payload: 'signup' | 'login') => ({
   type: ACTIONS.SET_AUTH_LOGIN_TYPE,
   payload
 });
+
+export const setShowPaymentModal = (payload: boolean) => ({
+  type: ACTIONS.SET_SHOW_PAYMENT_MODAL,
+  payload
+});
+
+export const setShowBalanceModal = (payload: boolean) => ({
+  type: ACTIONS.SET_SHOW_BALANCE_MODAL,
+  payload
+});

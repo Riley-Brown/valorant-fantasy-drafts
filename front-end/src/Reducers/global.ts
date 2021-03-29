@@ -3,13 +3,17 @@ import { Action } from 'redux';
 
 export type GlobalStateTypes = {
   isAuthed: boolean;
+  showBalanceModal: boolean;
   showAuthModal: boolean;
+  showPaymentModal: boolean;
   loginType: 'signup' | 'login';
 };
 
 const initialState: GlobalStateTypes = {
   isAuthed: false,
+  showBalanceModal: false,
   showAuthModal: false,
+  showPaymentModal: false,
   loginType: 'signup'
 };
 
@@ -34,6 +38,16 @@ export default function globalReducer(
       return {
         ...state,
         loginType: payload
+      };
+    case ACTIONS.SET_SHOW_PAYMENT_MODAL:
+      return {
+        ...state,
+        showPaymentModal: payload
+      };
+    case ACTIONS.SET_SHOW_BALANCE_MODAL:
+      return {
+        ...state,
+        showBalanceModal: payload
       };
     default:
       return state;
