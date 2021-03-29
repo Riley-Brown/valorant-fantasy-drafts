@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './App.css';
 
 import { Switch, Route } from 'react-router-dom';
@@ -15,13 +16,17 @@ import Account from 'Pages/Account';
 
 import AuthModal from 'Components/AuthModal';
 import Navbar from 'Components/Navbar';
+import PaymentModal from 'Components/PaymentModal';
+import AddBalanceModal from 'Components/AddBalanceModal';
 
 import { useTypedSelector } from 'Reducers';
+
 import { getAccount } from 'API/account';
+import { getPaymentDetails } from 'API/payment';
+
 import { useDispatch } from 'react-redux';
 import { setAccount } from 'Actions/account';
 import { setIsAuthed } from 'Actions/global';
-import { useEffect } from 'react';
 
 function App() {
   const isAuthed = useTypedSelector((state) => state.global.isAuthed);
@@ -32,7 +37,23 @@ function App() {
     try {
       const account = await getAccount();
       if (account.type === 'ok') {
-        dispatch(setAccount(account.data));
+        if (account.data.stripeCustomerId) {
+          const payment = await getPaymentDetails();
+          console.log(payment);
+
+          dispatch(
+            setAccount({
+              ...account.data,
+              payment: {
+                cardBrand: payment.sources.data[0].brand,
+                cardLast4: payment.sources.data[0].last4
+              }
+            })
+          );
+        } else {
+          dispatch(setAccount(account.data));
+        }
+
         dispatch(setIsAuthed(true));
       }
     } catch (err) {
@@ -46,10 +67,16 @@ function App() {
 
   return (
     <>
-      <ToastProvider placement="bottom-center">
+      <ToastProvider placement="top-center">
         <div className="app-background" />
         <Navbar />
         <AuthModal />
+        {isAuthed && (
+          <>
+            <PaymentModal />
+            <AddBalanceModal />
+          </>
+        )}
         <Switch>
           <Route exact path="/player/:playerId" component={Player} />
           <Route
