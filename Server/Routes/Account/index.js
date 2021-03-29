@@ -18,7 +18,8 @@ router.get('/', async (req, res) => {
         drafts: (userAccount.drafts || []).reverse(),
         email: userAccount.email,
         isAdmin: userAccount.isAdmin,
-        signupDate: userAccount.signupDate
+        signupDate: userAccount.signupDate,
+        stripeCustomerId: userAccount.stripeCustomerId
       }
     });
   } catch (err) {
