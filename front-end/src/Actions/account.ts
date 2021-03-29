@@ -6,6 +6,11 @@ export const setAccount = (payload: AccountStateTypes) => ({
   payload
 });
 
+export const setPayment = (payload: AccountStateTypes['payment']) => ({
+  type: ACTIONS.SET_PAYMENT,
+  payload
+});
+
 export const updateAccount = (payload: Partial<AccountStateTypes>) => ({
   type: ACTIONS.UPDATE_ACCOUNT,
   payload
