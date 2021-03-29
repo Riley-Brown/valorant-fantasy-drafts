@@ -3,10 +3,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
-if (process.env.NODE_ENV === 'development') {
-  import('dotenv').then((dotenv) => dotenv.config());
-}
-
 import Leaderboard from './Routes/Leaderboard';
 import MatchStats from './Routes/MatchStats';
 import PlayerMatches from './Routes/PlayerMatches';
@@ -17,6 +13,7 @@ import Login from './Routes/Login';
 import Signup from './Routes/Signup';
 import Account from './Routes/Account';
 import Logout from './Routes/Logout';
+import StripePayments from './Routes/StripePayments';
 
 import { requireUserAuth } from './Middleware/authMiddleware';
 
@@ -49,6 +46,7 @@ server.use('/auth/login', Login);
 server.use('/auth/signup', Signup);
 server.use('/account', requireUserAuth, Account);
 server.use('/auth/logout', requireUserAuth, Logout);
+server.use('/payments/stripe', requireUserAuth, StripePayments);
 
 const port = process.env.PORT || 9999;
 
