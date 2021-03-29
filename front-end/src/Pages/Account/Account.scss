@@ -7,6 +7,36 @@
     font-size: 2rem;
     margin-bottom: 20px;
   }
+  .balance-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    button {
+      color: #fff;
+      margin: 0 10px;
+    }
+    .withdraw {
+      background: var(--secondary);
+    }
+    .add {
+      background: var(--primary);
+    }
+  }
+  .payment-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    .remove-payment {
+      background: var(--danger);
+      color: #fff;
+      margin: 0 10px;
+    }
+    .add-update-payment {
+      background: var(--primary);
+      color: #fff;
+      margin: 0 10px;
+    }
+  }
   .account-section {
     background: #222;
     padding: 30px;
