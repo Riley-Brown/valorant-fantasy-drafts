@@ -5,7 +5,7 @@
   "main": "Server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server:dev": "cross-env NODE_ENV=development nodemon --experimental-specifier-resolution=node Server/index",
+    "server:dev": "cross-env NODE_ENV=development nodemon --require dotenv/config --experimental-specifier-resolution=node Server/index",
     "client:dev": "cd front-end && npm run dev",
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev \"",
     "build:front-end": "npm --prefix front-end run build",
@@ -27,6 +27,7 @@
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "node-valorant-api": "^0.5.0",
+    "stripe": "^8.140.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
