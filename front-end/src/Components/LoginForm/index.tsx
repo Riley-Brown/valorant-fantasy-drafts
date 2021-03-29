@@ -45,7 +45,8 @@ export default function LoginForm({
           email: account.data.email,
           isAdmin: account.data.isAdmin,
           signupDate: account.data.signupDate,
-          userId: account.data._id
+          stripeCustomerId: account.data.stripeCustomerId,
+          userId: account.data.userId
         })
       );
 

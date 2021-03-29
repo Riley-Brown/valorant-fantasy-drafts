@@ -46,7 +46,8 @@ export default function SignupForm({
           email: account.data.email,
           isAdmin: false,
           signupDate: account.data.signupDate,
-          userId: account.data._id
+          stripeCustomerId: undefined,
+          userId: account.data.userId
         })
       );
 
