@@ -4,26 +4,62 @@ export function FormatPlayerMatches(matches) {
   matches.forEach((match) => {
     const matchId = match.attributes.id;
     const {
-      result,
       isAvailable,
       map,
-      mapName,
       mapImageUrl,
+      mapName,
+      result,
       timestamp
     } = match.metadata;
 
-    const score = match.segments[0].stats.score.value;
+    if (isAvailable) {
+      const {
+        assists,
+        damage,
+        damagePerRound,
+        deaths,
+        defuses,
+        firstBloods,
+        headshotsPercentage,
+        kdRatio,
+        kills,
+        placement,
+        plants,
+        roundsLost,
+        roundsWon,
+        score,
+        scorePerRound
+      } = match.segments[0].stats;
 
-    matchStats.push({
-      isAvailable,
-      map,
-      mapImageUrl,
-      mapName,
-      matchId,
-      result,
-      score,
-      timestamp: Math.floor(Date.parse(timestamp) / 1000)
-    });
+      const { agentImageUrl, agentName } = match.segments[0].metadata;
+
+      matchStats.push({
+        agentImageUrl,
+        agentName,
+        assists: assists.value,
+        damage: damage.value,
+        damagePerRound: damagePerRound.value,
+        deaths: deaths.value,
+        defuses: defuses.value,
+        firstBloods: firstBloods.value,
+        headshotsPercentage: headshotsPercentage.value,
+        isAvailable,
+        kdRatio: kdRatio.value,
+        kills: kills.value,
+        map,
+        mapImageUrl,
+        mapName,
+        matchId,
+        placement: placement.value,
+        plants: plants.value,
+        result,
+        roundsLost: roundsLost.value,
+        roundsWon: roundsWon.value,
+        score: score.value,
+        scorePerRound: scorePerRound.displayValue,
+        timestamp: Math.floor(Date.parse(timestamp) / 1000)
+      });
+    }
   });
 
   return matchStats;
