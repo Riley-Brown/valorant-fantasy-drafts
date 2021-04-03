@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 
-import { getPlayerMatches } from '../../Components/PlayerMatches';
+import { getPlayerMatches } from '../../API/TrackerGG';
 
 router.get('/', async (req, res) => {
   try {

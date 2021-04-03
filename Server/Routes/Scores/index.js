@@ -1,11 +1,15 @@
 import { Router } from 'express';
 const router = Router();
 
-import { handleCalcPlayerScores } from '../../Components/Scores';
+import { FormatPlayerMatches } from '../../Models/PlayerMatches';
+import { getPlayerMatches } from '../../API/TrackerGG';
 
 router.post('/calc-player-scores', async (req, res) => {
-  const data = await handleCalcPlayerScores(req.body.playerId);
-  res.send(data);
+  const { matches } = await getPlayerMatches(req.body.playerId);
+
+  const formattedPlayerMatches = FormatPlayerMatches(matches);
+
+  res.send(formattedPlayerMatches);
 });
 
 export default router;

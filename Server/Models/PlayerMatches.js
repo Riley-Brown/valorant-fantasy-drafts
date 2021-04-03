@@ -1,10 +1,7 @@
-import { getPlayerMatches } from '../PlayerMatches';
-
-export async function handleCalcPlayerScores(playerId) {
+export function FormatPlayerMatches(matches) {
   const matchStats = [];
-  const { data } = await getPlayerMatches(playerId);
 
-  data.matches.forEach((match) => {
+  matches.forEach((match) => {
     const matchId = match.attributes.id;
     const {
       result,
