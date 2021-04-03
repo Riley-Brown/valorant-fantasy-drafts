@@ -1,5 +1,10 @@
-import { getDraftsCollection } from '../../DB/drafts';
-import { getLeaderboard } from '../../API/TrackerGG';
+import {
+  getDraftsCollection,
+  getDraftParticipantsCollection
+} from '../../DB/drafts';
+import { getLeaderboard, getPlayerMatches } from '../../API/TrackerGG';
+
+import { FormatPlayerMatches } from '../../Models/PlayerMatches';
 
 import { v4 as uuid } from 'uuid';
 
@@ -85,4 +90,88 @@ export async function getClosestUpcomingDraft() {
   } else {
     return results;
   }
+}
+
+export async function calcDraftScores(draftId) {
+  const draft = await getDraftById(draftId);
+
+  if (!draft) {
+    throw Error('Draft does not exist');
+  }
+
+  const {
+    mongoClient,
+    draftParticipantsCollection
+  } = await getDraftParticipantsCollection({ draftId });
+
+  const participants = await draftParticipantsCollection.find().toArray();
+
+  if (!draftParticipantsCollection) {
+    throw Error('Draft does not exist');
+  }
+
+  const cachedPlayerMatches = {};
+  const participantsScores = [];
+
+  for (let i = 0; i < participants.length; i++) {
+    const participantScores = {};
+    const { selectedRoster, userId } = participants[i];
+
+    for (let j = 0; j < selectedRoster.length; j++) {
+      const player = selectedRoster[j];
+
+      if (cachedPlayerMatches[player.id]) {
+        participantScores[player.id] = {
+          totalScore: cachedPlayerMatches[player.id].totalScore,
+          selectedRoster
+          // matches: cachedPlayerMatches[player.id].matches
+        };
+      } else {
+        // todo: handle potentially loading more paginated matches
+        console.log('getting matches...');
+        try {
+          const { matches } = await getPlayerMatches(player.id);
+          const formattedPlayerMatches = FormatPlayerMatches(matches);
+
+          const filteredMatches = formattedPlayerMatches.filter(
+            (match) =>
+              match.timestamp >= draft.startDate &&
+              match.timestamp <= draft.endDate
+          );
+
+          const calcMatchesScores = filteredMatches.reduce(
+            (prev, match) => prev + match.score,
+            0
+          );
+
+          participantScores[player.id] = {
+            totalScore: calcMatchesScores
+          };
+
+          cachedPlayerMatches[player.id] = {
+            totalScore: calcMatchesScores,
+            matches: filteredMatches
+          };
+        } catch (err) {
+          console.log(player);
+          console.log(err);
+        }
+      }
+    }
+
+    const totalScore = Object.values(participantScores).reduce(
+      (prev, player) => prev + player.totalScore,
+      0
+    );
+
+    participantsScores.push({
+      participantId: userId,
+      totalScore,
+      selectedRoster
+    });
+  }
+
+  await mongoClient.close();
+
+  return { participantsScores, playerMatches: cachedPlayerMatches };
 }
