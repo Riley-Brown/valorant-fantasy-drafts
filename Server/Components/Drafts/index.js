@@ -1,13 +1,10 @@
-import { createMongoClient } from '../../DB';
-import { getLeaderboard } from '../Leaderboard';
+import { getDraftsCollection } from '../../DB/drafts';
+import { getLeaderboard } from '../../API/TrackerGG';
 
 import { v4 as uuid } from 'uuid';
 
 export async function createDraft({ startDate, endDate, entryFee }) {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
-
-  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
+  const { mongoClient, draftsCollection } = await getDraftsCollection();
 
   const players = await getLeaderboard();
 
@@ -15,7 +12,7 @@ export async function createDraft({ startDate, endDate, entryFee }) {
 
   console.log({ draftId });
 
-  const insert = await collection.insertOne({
+  const insert = await draftsCollection.insertOne({
     _id: draftId,
     endDate,
     entryFee: entryFee || 0,
@@ -33,23 +30,19 @@ export async function createDraft({ startDate, endDate, entryFee }) {
 }
 
 export async function getAllDrafts() {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
+  const { mongoClient, draftsCollection } = await getDraftsCollection();
 
-  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
+  const results = await draftsCollection.find({}).toArray();
 
-  const results = await collection.find({}).toArray();
+  await mongoClient.close();
 
   return results;
 }
 
 export async function getUpcomingDrafts() {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
+  const { mongoClient, draftsCollection } = await getDraftsCollection();
 
-  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
-
-  const results = await collection
+  const results = await draftsCollection
     .find({
       startDate: {
         $gt: Date.now() / 1000
@@ -57,25 +50,25 @@ export async function getUpcomingDrafts() {
     })
     .toArray();
 
+  await mongoClient.close();
+
   return results;
 }
 
-export async function getUpcomingDraft(draftId) {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
+export async function getDraftById(draftId) {
+  const { mongoClient, draftsCollection } = await getDraftsCollection();
 
-  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
+  const result = await draftsCollection.findOne({ _id: draftId });
 
-  return await collection.findOne({ _id: draftId });
+  await mongoClient.close();
+
+  return result;
 }
 
 export async function getClosestUpcomingDraft() {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
+  const { mongoClient, draftsCollection } = await getDraftsCollection();
 
-  const collection = mongoClient.db('valorant-draft-db').collection('drafts');
-
-  const results = await collection
+  const results = await draftsCollection
     .find({
       startDate: {
         $gt: Date.now() / 1000
@@ -84,6 +77,8 @@ export async function getClosestUpcomingDraft() {
     .limit(5)
     .sort({ startDate: 1 })
     .toArray();
+
+  await mongoClient.close();
 
   if (results.length > 0) {
     return results[0];
