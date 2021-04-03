@@ -7,8 +7,9 @@ import {
   createDraft,
   getAllDrafts,
   getUpcomingDrafts,
-  getUpcomingDraft,
-  getClosestUpcomingDraft
+  getDraftById,
+  getClosestUpcomingDraft,
+  calcDraftScores
 } from '../../Components/Drafts';
 
 router.post('/create-draft', requireAdminAuth, async (req, res) => {
@@ -77,7 +78,7 @@ router.get('/upcoming', async (req, res) => {
 
 router.get('/upcoming/id/:draftId', async (req, res) => {
   try {
-    const draft = await getUpcomingDraft(req.params.draftId);
+    const draft = await getDraftById(req.params.draftId);
     res.send(draft);
   } catch (err) {
     console.log(err);
@@ -90,6 +91,21 @@ router.get('/upcoming/closest-draft', async (req, res) => {
     res.send(draft);
   } catch (err) {
     console.log(err);
+  }
+});
+
+router.post('/calc-draft-scores', async (req, res) => {
+  try {
+    const scores = await calcDraftScores(req.body.draftId);
+    console.log(scores);
+
+    res.send(scores);
+  } catch (err) {
+    console.log(err);
+    res.send({
+      type: 'calcScoresError',
+      message: err.message
+    });
   }
 });
 
