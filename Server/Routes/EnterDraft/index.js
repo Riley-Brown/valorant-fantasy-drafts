@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { createMongoClient } from '../../DB';
 
-import { getUpcomingDraft } from '../../Components/Drafts';
+import { getDraftById } from '../../Components/Drafts';
 
 const router = Router();
 
@@ -15,12 +15,19 @@ router.post('/', async (req, res) => {
   await mongoClient.connect();
 
   try {
-    const upcomingDraft = await getUpcomingDraft(draftId);
+    const upcomingDraft = await getDraftById(draftId);
 
     if (!upcomingDraft) {
       return res.send({
         type: 'draftNotExist',
         message: 'Draft does not exist'
+      });
+    }
+
+    if (upcomingDraft.startDate < Date.now() / 1000) {
+      return res.send({
+        type: 'draftStarted',
+        message: 'This draft has already started'
       });
     }
 
