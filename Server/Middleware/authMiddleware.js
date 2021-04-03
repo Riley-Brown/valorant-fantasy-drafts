@@ -15,7 +15,7 @@ const handleVerifyToken = (token) => {
 };
 
 const handleSendAuthError = (res) =>
-  res.send({ type: 'authError', message: 'Not authorized' });
+  res.status(401).send({ type: 'authError', message: 'Not authorized' });
 
 export const requireUserAuth = async (req, res, next) => {
   const token = req.cookies.userSession;
