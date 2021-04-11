@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 :root {
@@ -12,14 +12,6 @@
   --secondary: #54667a;
   --bg-dark: #222;
   --success-darker: hsl(134, 61%, 35%);
-}
-
-html {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-  /* background: var(--bg-dark) */
 }
 
 .app-background {
