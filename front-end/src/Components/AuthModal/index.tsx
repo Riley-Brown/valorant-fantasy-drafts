@@ -6,7 +6,7 @@ import './AuthModal.scss';
 import { setAuthLoginType, setShowAuthModal } from 'Actions/global';
 import { useTypedSelector } from 'Reducers';
 
-import trollLogo from 'Assets/troll-logo.png';
+import placeholderLogo from 'Assets/placeholder-logo.png';
 
 import SignupForm from 'Components/SignupForm';
 import Fade from 'Components/Fade';
@@ -32,16 +32,20 @@ export default function AuthModal() {
           >
             <div className="container" onClick={(e) => e.stopPropagation()}>
               <div className="info">
-                <img className="logo" src={trollLogo} alt="" />
+                <img
+                  className="logo"
+                  src={placeholderLogo}
+                  alt="Placeholder logo"
+                />
                 {loginType === 'login' ? (
                   <>
-                    <h1>Login to Dolzy.com</h1>
+                    <h1>Login to test.com</h1>
                     <p>Login to your account to enter this draft</p>
                   </>
                 ) : (
                   <>
-                    <h1>Welcome to Dolzy.com</h1>
-                    <p>Signup for our shitty ass site to enter this draft</p>
+                    <h1>Welcome to test.com</h1>
+                    <p>Signup for our test.com to enter this draft</p>
                   </>
                 )}
               </div>
