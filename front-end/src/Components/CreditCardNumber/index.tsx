@@ -1,70 +1,47 @@
-import React, { useRef, useEffect } from 'react';
 import Cleave from 'cleave.js/react';
-import PropTypes from 'prop-types';
+import { Control, Controller } from 'react-hook-form';
 
 import { cardNumberRegex } from 'Helpers';
+import { PaymentModalFormTypes } from 'Components/PaymentModal';
 
 export default function CreditCardNumber({
-  register,
-  errors,
-  setValue,
-  ...rest
+  control
 }: {
-  register: any;
-  errors: any;
-  setValue: any;
+  control: Control<PaymentModalFormTypes>;
 }) {
-  const cardNumberRef = useRef<HTMLElement>();
-
-  useEffect(() => {
-    const errorsArr = Object.keys(errors);
-
-    if (
-      cardNumberRef.current &&
-      errors.cardNumber &&
-      errorsArr[0] === 'cardNumber'
-    ) {
-      cardNumberRef.current?.focus();
-    }
-  }, [errors]);
-
   return (
     <>
-      <Cleave
-        data-private
-        id="card-number"
-        inputMode="numeric"
-        className={`form-control ${errors.cardNumber ? 'is-invalid' : ''}`}
+      <Controller
+        control={control}
         name="cardNumber"
-        placeholder="4242 4242 4242 4242"
-        options={{
-          creditCard: true
+        rules={{
+          required: 'Card number is required',
+          validate: {
+            regex: (value: string) =>
+              cardNumberRegex.test(value.replace(/\s/g, '')) ||
+              'Invalid card number'
+          }
         }}
-        htmlRef={(ref) => {
-          cardNumberRef.current = ref;
-          register(
-            { name: 'cardNumber', type: 'custom' },
-            {
-              required: true,
-              validate: {
-                regex: (value: string) =>
-                  cardNumberRegex.test(value.replace(/\s/g, ''))
-              }
-            }
-          );
-        }}
-        onChange={(e) => setValue('cardNumber', e.target.value, true)}
-        {...rest}
+        render={({ field, fieldState: { error } }) => (
+          <>
+            <Cleave
+              data-private
+              id="card-number"
+              inputMode="numeric"
+              className={`form-control ${error ? 'is-invalid' : ''}`}
+              placeholder="4242 4242 4242 4242"
+              options={{
+                creditCard: true
+              }}
+              {...field}
+              htmlRef={field.ref as any}
+            />
+            {error && (
+              <small className="d-block text-danger">{error.message}</small>
+            )}
+          </>
+        )}
       />
-      {errors.cardNumber && (
-        <small className="text-danger">
-          {errors.cardNumber.type === 'required'
-            ? 'Card number is required'
-            : errors.cardNumber.type === 'incorrect'
-            ? 'Incorrect card number. Please check card number and try again.'
-            : 'Invalid card number'}
-        </small>
-      )}
     </>
   );
 }
