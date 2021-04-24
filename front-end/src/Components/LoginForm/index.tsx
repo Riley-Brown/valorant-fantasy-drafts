@@ -1,62 +1,43 @@
-import { useState, FormEvent } from 'react';
-import { useHistory } from 'react-router';
-
-import { login } from 'API/auth';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import './LoginForm.scss';
+
+import { login } from 'API';
+
 import SpinnerButton from 'Components/SpinnerButton';
-import { useDispatch } from 'react-redux';
-import { setIsAuthed } from 'Actions/global';
-import { getAccount } from 'API/account';
-import { setAccount } from 'Actions/account';
 
 export default function LoginForm({
+  handleGetAccount,
   onLoginSuccess
 }: {
+  handleGetAccount: () => Promise<void>;
   onLoginSuccess: () => any;
 }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    setError,
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<{ email: string; password: string }>();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
-  const history = useHistory();
-
-  const dispatch = useDispatch();
-
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
-
+  const handleLogin = handleSubmit(async ({ email, password }) => {
     setLoading(true);
 
     const loginRes = await login({ email, password });
 
     if (loginRes.type === 'ok') {
-      dispatch(setIsAuthed(true));
-      // history.push('/');
-
-      const account = await getAccount();
-      dispatch(
-        setAccount({
-          balance: account.data.balance,
-          balanceFormatted: `$${account.data.balance * 100}`,
-          drafts: account.data.drafts,
-          email: account.data.email,
-          isAdmin: account.data.isAdmin,
-          signupDate: account.data.signupDate,
-          stripeCustomerId: account.data.stripeCustomerId,
-          userId: account.data.userId
-        })
-      );
+      await handleGetAccount();
 
       setLoading(false);
       onLoginSuccess();
     } else {
       setLoading(false);
-      setError(loginRes.message);
+      setError('email', { message: loginRes.message });
     }
-  };
+  });
 
   return (
     <div id="login-form">
@@ -64,35 +45,35 @@ export default function LoginForm({
         <div className="input-wrapper">
           <label htmlFor="email">Email</label>
           <input
-            onChange={({ target }) => {
-              setError(false);
-              setEmail(target.value);
-            }}
+            {...register('email', { required: 'Email is required' })}
             type="email"
             id="email"
-            value={email}
           />
+          {errors.email && (
+            <small
+              style={{ marginTop: '5px', display: 'block' }}
+              className="text-danger"
+            >
+              {errors.email.message}
+            </small>
+          )}
         </div>
         <div className="input-wrapper">
           <label htmlFor="password">Password</label>
           <input
-            onChange={({ target }) => {
-              setError(false);
-              setPassword(target.value);
-            }}
             type="password"
             id="password"
-            value={password}
+            {...register('password', { required: 'Password is required' })}
           />
+          {errors.password && (
+            <small
+              style={{ marginTop: '5px', display: 'block' }}
+              className="text-danger"
+            >
+              {errors.password.message}
+            </small>
+          )}
         </div>
-        {error && (
-          <small
-            style={{ marginTop: '5px', display: 'block' }}
-            className="text-danger"
-          >
-            {error}
-          </small>
-        )}
         <SpinnerButton
           spinnerProps={{ style: { width: '1.5rem', height: '1.5rem' } }}
           type="submit"
