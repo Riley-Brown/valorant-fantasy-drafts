@@ -83,3 +83,7 @@ input {
 small {
   font-size: 80%;
 }
+
+input.is-invalid {
+  border: 1px solid var(--danger);
+}
