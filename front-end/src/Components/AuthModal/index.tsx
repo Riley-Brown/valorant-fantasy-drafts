@@ -13,7 +13,11 @@ import Fade from 'Components/Fade';
 import LoginForm from 'Components/LoginForm';
 import Portal from 'Components/Portal';
 
-export default function AuthModal() {
+export default function AuthModal({
+  handleGetAccount
+}: {
+  handleGetAccount: () => Promise<void>;
+}) {
   const showAuthModal = useTypedSelector((state) => state.global.showAuthModal);
 
   const dispatch = useDispatch();
@@ -52,6 +56,7 @@ export default function AuthModal() {
               {loginType === 'login' ? (
                 <>
                   <LoginForm
+                    handleGetAccount={handleGetAccount}
                     onLoginSuccess={() => {
                       dispatch(setShowAuthModal(false));
                     }}
@@ -71,6 +76,7 @@ export default function AuthModal() {
               ) : (
                 <>
                   <SignupForm
+                    handleGetAccount={handleGetAccount}
                     onSignupSuccess={() => dispatch(setShowAuthModal(false))}
                   />
                   <footer>

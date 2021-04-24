@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import './App.css';
-
+import { useDispatch } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
-
 import { ToastProvider } from 'react-toast-notifications';
+
+import './App.css';
 
 import Player from 'Pages/Player';
 import MatchStats from 'Pages/MatchStats';
@@ -20,13 +20,8 @@ import PaymentModal from 'Components/PaymentModal';
 import AddBalanceModal from 'Components/AddBalanceModal';
 
 import { useTypedSelector } from 'Reducers';
-
-import { getAccount } from 'API/account';
-import { getPaymentDetails } from 'API/payment';
-
-import { useDispatch } from 'react-redux';
-import { setAccount } from 'Actions/account';
-import { setIsAuthed } from 'Actions/global';
+import { getAccount, getPaymentDetails } from 'API';
+import { setAccount, setIsAuthed } from 'Actions';
 
 function App() {
   const isAuthed = useTypedSelector((state) => state.global.isAuthed);
@@ -39,7 +34,6 @@ function App() {
       if (account.type === 'ok') {
         if (account.data.stripeCustomerId) {
           const payment = await getPaymentDetails();
-          console.log(payment);
 
           dispatch(
             setAccount({
@@ -70,7 +64,7 @@ function App() {
       <ToastProvider placement="top-center">
         <div className="app-background" />
         <Navbar />
-        <AuthModal />
+        <AuthModal handleGetAccount={handleGetAccount} />
         {isAuthed && (
           <>
             <PaymentModal />
