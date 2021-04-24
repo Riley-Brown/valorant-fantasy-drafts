@@ -18,13 +18,12 @@ import { addPayment } from 'API/payment';
 
 import { useToasts } from 'react-toast-notifications';
 
-type FormSubmitTypes = {
+export type PaymentModalFormTypes = {
+  addBalance: string;
   cardCvc: string;
   cardExp: string;
-  // cardName: string;
   cardNumber: string;
   chargeAmount: string;
-  // cardZip: string;
 };
 
 export default function PaymentModal() {
@@ -34,24 +33,19 @@ export default function PaymentModal() {
 
   const dispatch = useDispatch();
 
-  const [paymentError, setPaymentError] = useState('');
-
   const { addToast } = useToasts();
 
   const {
     register,
     handleSubmit,
-    errors,
-    setValue,
-    setError
-  } = useForm<FormSubmitTypes>({
+    formState: { errors },
+    setError,
+    control
+  } = useForm<PaymentModalFormTypes>({
     mode: 'onBlur'
   });
 
-  console.log(errors);
-
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     setLoading(true);
 
     try {
@@ -84,12 +78,13 @@ export default function PaymentModal() {
           appearance: 'error',
           autoDismiss: true
         });
+
+        if (saveCard.type === 'card_error') {
+          setError('cardNumber', { message: saveCard.message });
+        }
       }
 
-      // setPaymentError(saveCard.message);
-
       setLoading(false);
-      console.log(saveCard);
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -107,32 +102,25 @@ export default function PaymentModal() {
             <div className="container" onClick={(e) => e.stopPropagation()}>
               <form onSubmit={onSubmit}>
                 <div className="input-wrapper">
-                  {paymentError && (
-                    <h2 className="text-danger">{paymentError}</h2>
-                  )}
                   <label htmlFor="card-number">Card number</label>
-                  <CreditCardNumber
-                    register={register}
-                    errors={errors}
-                    setValue={setValue}
-                  />
+                  <CreditCardNumber control={control} />
                 </div>
                 <div className="input-row-wrapper">
                   <div className="input-wrapper">
                     <label htmlFor="card-exp">Card exp</label>
-                    <CreditCardExp
-                      register={register}
-                      errors={errors}
-                      setValue={setValue}
-                    />
+                    <CreditCardExp control={control} />
                   </div>
                   <div className="input-wrapper">
                     <label htmlFor="card-cvc">Card Cvc</label>
                     <input
-                      ref={register({
-                        required: true,
+                      className={`form-control ${
+                        errors.cardCvc ? 'is-invalid' : ''
+                      }`}
+                      {...register('cardCvc', {
+                        required: 'Card cvc is required',
                         validate: {
-                          invalid: (value) => value.trim().length <= 4
+                          invalid: (value) =>
+                            value.trim().length <= 4 || 'Invalid cvc'
                         }
                       })}
                       placeholder="***"
@@ -140,13 +128,10 @@ export default function PaymentModal() {
                       type="number"
                       pattern="[0-9]*"
                       inputMode="numeric"
-                      name="cardCvc"
                     />
                     {errors.cardCvc && (
                       <small className="text-danger">
-                        {(errors.cardCvc as FieldError).type === 'invalid'
-                          ? 'Invalid cvc'
-                          : 'Card cvc is required'}
+                        {errors.cardCvc.message}
                       </small>
                     )}
                   </div>
@@ -154,18 +139,12 @@ export default function PaymentModal() {
                 <div className="input-wrapper">
                   <label htmlFor="add-balance">Add balance</label>
                   <input
-                    ref={register({
-                      // required: true,
-                      // validate: {
-                      //   invalid: (value) => value.trim().length <= 4
-                      // }
-                    })}
+                    {...register('addBalance')}
                     placeholder="5.00"
                     id="add-balance"
                     type="number"
                     pattern="[0-9]*"
                     inputMode="numeric"
-                    name="addBalance"
                   />
                   {errors.cardCvc && (
                     <small className="text-danger">
