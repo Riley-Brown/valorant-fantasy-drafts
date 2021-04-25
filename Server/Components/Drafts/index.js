@@ -112,6 +112,7 @@ export async function calcDraftScores(draftId) {
 
   const cachedPlayerMatches = {};
   const participantsScores = [];
+  const players = {};
 
   for (let i = 0; i < participants.length; i++) {
     const participantScores = {};
@@ -119,12 +120,14 @@ export async function calcDraftScores(draftId) {
 
     for (let j = 0; j < selectedRoster.length; j++) {
       const player = selectedRoster[j];
+      if (!players[player.id]) {
+        players[player.id] = player;
+      }
 
       if (cachedPlayerMatches[player.id]) {
         participantScores[player.id] = {
           totalScore: cachedPlayerMatches[player.id].totalScore,
           selectedRoster
-          // matches: cachedPlayerMatches[player.id].matches
         };
       } else {
         // todo: handle potentially loading more paginated matches
@@ -173,5 +176,11 @@ export async function calcDraftScores(draftId) {
 
   await mongoClient.close();
 
-  return { participantsScores, playerMatches: cachedPlayerMatches };
+  return {
+    participantsScores: participantsScores.sort(
+      (a, b) => b.totalScore - a.totalScore
+    ),
+    playerMatches: cachedPlayerMatches,
+    players
+  };
 }
