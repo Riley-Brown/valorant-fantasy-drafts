@@ -29,3 +29,25 @@ export function formatPrice(price: string) {
     2
   )}`;
 }
+
+export function calcUnixTimeDifference(date1: number, date2: number) {
+  console.log({ date1, date2 });
+
+  const difference = Math.floor(date1 - date2);
+
+  console.log(difference);
+
+  const days = Math.floor(difference / 60 / 60 / 24);
+  const hours = Math.floor((difference / 60 / 60) % 24);
+  const minutes = Math.floor((difference / 60) % 60);
+  const seconds = Math.floor(difference % 60);
+
+  console.log({ days, hours, minutes, seconds });
+
+  return {
+    days,
+    hours,
+    minutes,
+    seconds
+  };
+}
