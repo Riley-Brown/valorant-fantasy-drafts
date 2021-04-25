@@ -22,6 +22,7 @@ import AddBalanceModal from 'Components/AddBalanceModal';
 import { useTypedSelector } from 'Reducers';
 import { getAccount, getPaymentDetails } from 'API';
 import { setAccount, setIsAuthed } from 'Actions';
+import DraftResults from 'Pages/DraftResults';
 
 function App() {
   const isAuthed = useTypedSelector((state) => state.global.isAuthed);
@@ -78,6 +79,7 @@ function App() {
             path="/player/:playerId/match/:matchId"
             component={MatchStats}
           />
+          <Route exact path="/draft/live/:draftId" component={DraftResults} />
           <Route
             exact
             path="/draft/upcoming/:draftId"
