@@ -58,3 +58,15 @@ export async function createDraft({ startDate, endDate, entryFee }) {
 
   return res.json();
 }
+
+export async function getLiveDraftResults(draftId) {
+  const res = await fetch(`${API_ROOT}/drafts/scores/${draftId}`, {
+    method: 'GET'
+  });
+
+  return res.json();
+}
+
+export function liveDraftResultsEventsUrl(draftId) {
+  return `${API_ROOT}/drafts/scores/${draftId}/events`;
+}
