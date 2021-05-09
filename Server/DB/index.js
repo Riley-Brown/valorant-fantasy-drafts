@@ -1,7 +1,15 @@
 import MongoDB from 'mongodb';
 
-export const createMongoClient = () =>
-  new MongoDB.MongoClient(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+/**
+ * @type MongoDB.MongoClient
+ */
+const client = MongoDB.MongoClient(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+client.connect().then(() => {
+  console.log('connected to mongo');
+});
+
+export const mongoClient = client;
