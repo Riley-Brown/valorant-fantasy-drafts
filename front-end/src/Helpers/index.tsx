@@ -1,7 +1,10 @@
 import { isBefore, sub } from 'date-fns/esm';
 
 export function formattedInt(number: number) {
-  return (number / 100).toFixed(2);
+  return (number / 100).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 // credit card number regex
