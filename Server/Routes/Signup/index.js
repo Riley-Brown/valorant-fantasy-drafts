@@ -4,16 +4,23 @@ const router = Router();
 import { getUsersCollection } from '../../DB/users';
 import { createToken, hashPassword } from '../../Auth';
 
-import { isString } from '../../Helpers';
-
 import UserModel from '../../Models/User';
 
-router.post('/', async (req, res) => {
-  const { email, password } = req.body;
+import { validationResult } from 'express-validator';
 
-  if (!email || !password || !isString(email) || !isString(password)) {
-    return res.send({ type: 'error', message: 'Invalid email or password' });
+router.post('/', async (req, res) => {
+  const result = validationResult(req).formatWith(({ msg }) => ({
+    msg
+  }));
+
+  if (!result.isEmpty()) {
+    return res.status(400).json({
+      type: 'validationErrors',
+      errors: result.mapped()
+    });
   }
+
+  const { displayName, email, password } = req.body;
 
   const { mongoClient, usersCollection } = await getUsersCollection();
 
@@ -31,7 +38,7 @@ router.post('/', async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
-    const newUser = UserModel({ email, hashedPassword });
+    const newUser = UserModel({ displayName, email, hashedPassword });
 
     const insert = await usersCollection.insertOne(newUser);
 

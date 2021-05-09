@@ -16,6 +16,7 @@ import Logout from './Routes/Logout';
 import StripePayments from './Routes/StripePayments';
 
 import { requireUserAuth } from './Middleware/authMiddleware';
+import SignupValidator from './Middleware/Validators/Signup';
 
 const server = express();
 
@@ -43,7 +44,7 @@ server.use('/drafts', Drafts);
 server.use('/scores', Scores);
 server.use('/drafts/enter-draft', requireUserAuth, EnterDraft);
 server.use('/auth/login', Login);
-server.use('/auth/signup', Signup);
+server.use('/auth/signup', SignupValidator, Signup);
 server.use('/account', requireUserAuth, Account);
 server.use('/auth/logout', requireUserAuth, Logout);
 server.use('/payments/stripe', requireUserAuth, StripePayments);
