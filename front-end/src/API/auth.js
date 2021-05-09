@@ -13,14 +13,14 @@ export async function login({ email, password }) {
   return res.json();
 }
 
-export async function signup({ email, password }) {
+export async function signup({ displayName, email, password }) {
   const res = await fetch(`${API_ROOT}/auth/signup`, {
     method: 'POST',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ displayName, email, password })
   });
 
   return res.json();
