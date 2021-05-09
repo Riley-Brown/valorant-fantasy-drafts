@@ -29,23 +29,19 @@ export async function createDraft({ startDate, endDate, entryFee }) {
     .db('valorant-draft-db')
     .createCollection(`draft-participants-${draftId}`);
 
-  await mongoClient.close();
-
   return insert.insertedCount;
 }
 
 export async function getAllDrafts() {
-  const { mongoClient, draftsCollection } = await getDraftsCollection();
+  const { draftsCollection } = await getDraftsCollection();
 
   const results = await draftsCollection.find({}).toArray();
-
-  await mongoClient.close();
 
   return results;
 }
 
 export async function getUpcomingDrafts() {
-  const { mongoClient, draftsCollection } = await getDraftsCollection();
+  const { draftsCollection } = await getDraftsCollection();
 
   const results = await draftsCollection
     .find({
@@ -55,23 +51,19 @@ export async function getUpcomingDrafts() {
     })
     .toArray();
 
-  await mongoClient.close();
-
   return results;
 }
 
 export async function getDraftById(draftId) {
-  const { mongoClient, draftsCollection } = await getDraftsCollection();
+  const { draftsCollection } = await getDraftsCollection();
 
   const result = await draftsCollection.findOne({ _id: draftId });
-
-  await mongoClient.close();
 
   return result;
 }
 
 export async function getClosestUpcomingDraft() {
-  const { mongoClient, draftsCollection } = await getDraftsCollection();
+  const { draftsCollection } = await getDraftsCollection();
 
   const results = await draftsCollection
     .find({
@@ -82,8 +74,6 @@ export async function getClosestUpcomingDraft() {
     .limit(5)
     .sort({ startDate: 1 })
     .toArray();
-
-  await mongoClient.close();
 
   if (results.length > 0) {
     return results[0];
@@ -101,10 +91,9 @@ export async function calcDraftScores(draftId) {
     throw Error('Draft does not exist');
   }
 
-  const {
-    mongoClient,
-    draftParticipantsCollection
-  } = await getDraftParticipantsCollection({ draftId });
+  const { draftParticipantsCollection } = await getDraftParticipantsCollection({
+    draftId
+  });
 
   const participants = await draftParticipantsCollection.find().toArray();
 
@@ -175,8 +164,6 @@ export async function calcDraftScores(draftId) {
       selectedRoster
     });
   }
-
-  await mongoClient.close();
 
   console.timeEnd('calc scores');
 

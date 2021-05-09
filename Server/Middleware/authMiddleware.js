@@ -51,7 +51,5 @@ export const requireAdminAuth = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return handleSendAuthError(res);
-  } finally {
-    mongoClient.close();
   }
 };

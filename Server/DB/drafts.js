@@ -1,9 +1,6 @@
-import { createMongoClient } from './';
+import { mongoClient } from './';
 
 export async function getDraftsCollection() {
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
-
   const draftsCollection = mongoClient
     .db('valorant-draft-db')
     .collection('drafts');
@@ -11,16 +8,7 @@ export async function getDraftsCollection() {
   return { draftsCollection, mongoClient };
 }
 
-export async function getDraftParticipantsCollection({
-  draftId,
-  autoConnect = true
-}) {
-  const mongoClient = createMongoClient();
-
-  if (autoConnect) {
-    await mongoClient.connect();
-  }
-
+export async function getDraftParticipantsCollection({ draftId }) {
   const draftParticipantsCollection = mongoClient
     .db('valorant-draft-db')
     .collection(`draft-participants-${draftId}`);

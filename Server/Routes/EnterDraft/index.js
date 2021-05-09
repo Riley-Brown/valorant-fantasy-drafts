@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { createMongoClient } from '../../DB';
+import { mongoClient } from '../../DB';
 
 import { getDraftById } from '../../Components/Drafts';
 
@@ -10,9 +10,6 @@ router.post('/', async (req, res) => {
   const { draftId, selectedRoster } = req.body;
 
   const { id: userId } = res.locals.userTokenObject;
-
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
 
   try {
     const upcomingDraft = await getDraftById(draftId);
@@ -139,7 +136,6 @@ router.post('/', async (req, res) => {
     res.send({ type: 'error', err: 'something went wrong entering draft' });
   } finally {
     console.log('finally enter draft');
-    await mongoClient.close();
   }
 });
 

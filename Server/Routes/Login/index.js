@@ -3,15 +3,12 @@ const router = Router();
 
 import { validatePasswordHash, createToken } from '../../Auth';
 
-import { createMongoClient } from '../../DB';
+import { mongoClient } from '../../DB';
 
 import { isString } from '../../Helpers';
 
 router.post('/', async (req, res) => {
   const { email, password } = req.body;
-
-  const mongoClient = createMongoClient();
-  await mongoClient.connect();
 
   try {
     const usersCollection = mongoClient
@@ -54,8 +51,6 @@ router.post('/', async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-  } finally {
-    await mongoClient.close();
   }
 });
 

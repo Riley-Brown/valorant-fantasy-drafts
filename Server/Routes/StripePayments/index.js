@@ -23,8 +23,6 @@ router.get('/get-payment', async (req, res) => {
     res.json(stripeCustomer);
   } catch (err) {
     console.log(err);
-  } finally {
-    mongoClient.close();
   }
 });
 
@@ -82,8 +80,6 @@ router.post('/charge', async (req, res) => {
     return res
       .status(400)
       .json({ type: 'error', message: 'Error capturing payment' });
-  } finally {
-    mongoClient.close();
   }
 });
 
@@ -180,8 +176,6 @@ router.post('/add-payment', async (req, res) => {
         .status(400)
         .json({ type: 'error', message: 'Error adding payment method' });
     }
-  } finally {
-    mongoClient.close();
   }
 });
 

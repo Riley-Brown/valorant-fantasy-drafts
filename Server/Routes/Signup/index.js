@@ -62,8 +62,6 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.send({ type: 'error', message: 'Error signing up' });
-  } finally {
-    await mongoClient.close();
   }
 });
 
