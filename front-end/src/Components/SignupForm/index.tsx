@@ -19,33 +19,55 @@ export default function SignupForm({
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<{ email: string; password: string; password2: string }>();
-
-  console.log(errors);
+  } = useForm<{
+    displayName: string;
+    email: string;
+    password: string;
+    password2: string;
+  }>();
 
   const [loading, setLoading] = useState(false);
 
-  const handleSignup = handleSubmit(async ({ email, password, password2 }) => {
-    console.log(errors, email, password);
+  const handleSignup = handleSubmit(
+    async ({ displayName, email, password, password2 }) => {
+      if (password !== password2) {
+        setError('password', { message: 'Passwords do not match' });
+        return;
+      }
 
-    if (password !== password2) {
-      setError('password', { message: 'Passwords do not match' });
-      return;
+      setLoading(true);
+
+      const signupRes = await signup({ displayName, email, password });
+
+      if (signupRes.type === 'ok') {
+        await handleGetAccount();
+        setLoading(false);
+        onSignupSuccess();
+      } else {
+        if (signupRes.type === 'validationErrors') {
+          const { errors } = signupRes;
+
+          if (errors.email) {
+            setError('email', { message: errors.email.msg });
+          }
+
+          if (errors.password) {
+            setError('password', { message: errors.password.msg });
+          }
+
+          if (errors.displayName) {
+            setError('displayName', { message: errors.displayName.msg });
+          }
+        } else {
+          setError('email', { message: signupRes.message });
+        }
+
+        setLoading(false);
+      }
     }
+  );
 
-    setLoading(true);
-
-    const signupRes = await signup({ email, password });
-
-    if (signupRes.type === 'ok') {
-      await handleGetAccount();
-      setLoading(false);
-      onSignupSuccess();
-    } else {
-      setLoading(false);
-      setError('email', { message: signupRes.message });
-    }
-  });
+  console.log(errors);
 
   return (
     <div id="signup-form">
@@ -63,6 +85,24 @@ export default function SignupForm({
               className="text-danger"
             >
               {errors.email.message}
+            </small>
+          )}
+        </div>
+        <div className="input-wrapper">
+          <label htmlFor="displayName">Display name</label>
+          <input
+            type="text"
+            id="displayName"
+            {...register('displayName', {
+              required: 'Display name is required'
+            })}
+          />
+          {errors.displayName && (
+            <small
+              style={{ marginTop: '5px', display: 'block' }}
+              className="text-danger"
+            >
+              {errors.displayName.message}
             </small>
           )}
         </div>
