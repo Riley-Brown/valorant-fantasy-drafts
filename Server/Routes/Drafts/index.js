@@ -17,18 +17,19 @@ import {
 } from '../../Components/Drafts';
 import { fromUnixTime } from 'date-fns';
 
-const scoreQueue = new Queue('calc scores');
+const scoreQueue = new Queue(
+  'calc scores',
+  process.env.REDIS_URL || 'redis://127.0.0.1:6379'
+);
 
 scoreQueue.process('calcScore', async (job, done) => {
-  console.log(job);
-
   try {
     const scores = await calcDraftScores(job.id);
     job.update(null);
     done(null, scores);
   } catch (err) {
     job.remove();
-    console.log(err);
+    console.log('something fucked up');
   }
 });
 
@@ -151,7 +152,7 @@ router.get('/scores/:draftId', async (req, res) => {
     console.log(minutesSinceCompleted);
 
     // Queue up new job if prev older than 5 minutes
-    if (minutesSinceCompleted > 5) {
+    if (minutesSinceCompleted > 1) {
       const prevData = job.returnvalue;
       await job.remove();
       await scoreQueue.add('calcScore', prevData, {
