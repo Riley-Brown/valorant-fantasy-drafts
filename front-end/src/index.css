@@ -88,8 +88,7 @@ input.is-invalid {
   border: 1px solid var(--danger);
 }
 
-input[type='text'],
-input[type='number'],
+input,
 textarea {
   font-size: 16px;
 }
