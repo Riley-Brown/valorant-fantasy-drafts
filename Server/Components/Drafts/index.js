@@ -93,6 +93,8 @@ export async function getClosestUpcomingDraft() {
 }
 
 export async function calcDraftScores(draftId) {
+  console.time('calc scores');
+
   const draft = await getDraftById(draftId);
 
   if (!draft) {
@@ -175,6 +177,8 @@ export async function calcDraftScores(draftId) {
   }
 
   await mongoClient.close();
+
+  console.timeEnd('calc scores');
 
   return {
     participantsScores: participantsScores.sort(
