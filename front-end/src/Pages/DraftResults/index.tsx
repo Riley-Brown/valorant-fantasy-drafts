@@ -37,8 +37,6 @@ export default function DraftResults() {
         players
       } = JSON.parse(message.data);
 
-      // console.log(parsedData);
-
       setParticipantsScores(participantsScores);
 
       setPlayerMatches(handleFormatPlayerMatches(playerMatches));
@@ -86,6 +84,7 @@ export default function DraftResults() {
     };
 
     if (lastUpdated) {
+      handleLastUpdated();
       lastUpdatedIntervalRef.current = setInterval(handleLastUpdated, 5000);
     }
 
@@ -114,7 +113,7 @@ export default function DraftResults() {
           <h1>Best performing players</h1>
           {lastUpdated && (
             <h4 style={{ marginBottom: 20 }}>
-              Last updated: {lastUpdatedFormatted?.minutes} minutes
+              Last updated: {lastUpdatedFormatted?.minutes} minutes{' '}
               {lastUpdatedFormatted?.seconds} seconds
             </h4>
           )}
@@ -123,7 +122,9 @@ export default function DraftResults() {
               <h2>{players[player.id].userHandleOnly}</h2>
               <img src={players[player.id].avatarUrl} alt="" />
               <h4>Rank: {players[player.id].rank}</h4>
-              <h4>Total score for this draft: {player.totalScore}</h4>
+              <h4>
+                Total score for this draft: {player.totalScore.toLocaleString()}
+              </h4>
             </div>
           ))}
         </div>
@@ -135,7 +136,7 @@ export default function DraftResults() {
           {participantsScores.map((participant: any, index) => (
             <div style={{ marginBottom: 50 }}>
               <h4 style={{ marginBottom: 10 }}>
-                Total score: {participant.totalScore}
+                Total score: {participant.totalScore.toLocaleString()}
               </h4>
               <SelectedRoster selectedRoster={participant.selectedRoster} />
             </div>
