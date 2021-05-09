@@ -11,6 +11,8 @@ import SelectedRoster from 'Pages/ClosestUpcomingDraft/SelectedRoster';
 import { useDispatch } from 'react-redux';
 import { setShowBalanceModal, setShowPaymentModal } from 'Actions';
 
+import DisplayName from './DisplayName';
+
 export default function Account() {
   const account = useTypedSelector((state) => state.account);
   const payment = useTypedSelector((state) => state.account.payment);
@@ -22,6 +24,7 @@ export default function Account() {
       <div className="account-info account-section">
         <h1 className="section-title">Account info</h1>
         <ul>
+          <DisplayName displayName={account.displayName} />
           <div className="wrapper">
             <li>Email</li>
             <li>{account.email}</li>
