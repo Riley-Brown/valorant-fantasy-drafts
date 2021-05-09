@@ -11,6 +11,7 @@ import SignupForm from 'Components/SignupForm';
 import Fade from 'Components/Fade';
 import LoginForm from 'Components/LoginForm';
 import Portal from 'Components/Portal';
+import { useEffect } from 'react';
 
 export default function AuthModal({
   handleGetAccount
@@ -18,6 +19,18 @@ export default function AuthModal({
   handleGetAccount: () => Promise<void>;
 }) {
   const showAuthModal = useTypedSelector((state) => state.global.showAuthModal);
+
+  useEffect(() => {
+    if (showAuthModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showAuthModal]);
 
   const dispatch = useDispatch();
 
