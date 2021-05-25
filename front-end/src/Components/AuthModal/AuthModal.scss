@@ -1,5 +1,5 @@
 #auth-modal {
-  #modal-backdrop {
+  .modal-backdrop {
     z-index: 200;
     min-height: 100vh;
     background: rgba(0, 0, 0, 0.5);
@@ -18,7 +18,10 @@
       // padding: 20px;
       border-radius: 4px;
       @media (max-width: 1024px) {
-        margin: 50px auto;
+        margin-top: 50px;
+      }
+      @media (max-width: 500px) {
+        width: 90%;
       }
       .info {
         padding: 20px;
