@@ -21,10 +21,10 @@ export default function AccountDropdown() {
       <Menu>
         <>
           <Menu.Button className="btn dropdown-button">
-            <h1 className="email">{account.email}</h1>
+            <h1 className="email">{account.displayName}</h1>
             <div className="avatar">
               <span style={{ textTransform: 'uppercase' }}>
-                {account.email.split('')[0]}
+                {(account.displayName || account.email).split('')[0]}
               </span>
             </div>
             <ChevronDownSvg />
