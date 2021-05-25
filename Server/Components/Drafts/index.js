@@ -107,7 +107,7 @@ export async function calcDraftScores(draftId) {
 
   for (let i = 0; i < participants.length; i++) {
     const participantScores = {};
-    const { selectedRoster, userId } = participants[i];
+    const { selectedRoster, userId, displayName } = participants[i];
 
     for (let j = 0; j < selectedRoster.length; j++) {
       const player = selectedRoster[j];
@@ -125,26 +125,48 @@ export async function calcDraftScores(draftId) {
         console.log('getting matches...');
         try {
           const { matches } = await getPlayerMatches(player.id);
-          const formattedPlayerMatches = FormatPlayerMatches(matches);
 
-          const filteredMatches = formattedPlayerMatches.filter(
-            (match) =>
-              match.timestamp >= draft.startDate &&
-              match.timestamp <= draft.endDate
-          );
+          const filteredMatches = matches.filter((match) => {
+            const timestamp = Math.floor(
+              Date.parse(match.metadata.timestamp) / 1000
+            );
 
-          const calcMatchesScores = filteredMatches.reduce(
-            (prev, match) => prev + match.score,
-            0
+            return timestamp >= draft.startDate && timestamp <= draft.endDate;
+          });
+
+          const formattedPlayerMatches = FormatPlayerMatches(filteredMatches);
+
+          const calcMatchesStats = formattedPlayerMatches.reduce(
+            (prev, match) => {
+              prev.totalScore += match.score;
+              prev.totalKills += match.kills;
+              prev.totalDeaths += match.deaths;
+              prev.totalDamage += match.damage;
+              prev.totalAssists += match.assists;
+              prev.totalDamage += match.damage;
+              prev.totalRoundsWon += match.roundsWon;
+              prev.totalRoundsLost += match.roundsLost;
+
+              return prev;
+            },
+            {
+              totalScore: 0,
+              totalKills: 0,
+              totalDeaths: 0,
+              totalDamage: 0,
+              totalAssists: 0,
+              totalRoundsWon: 0,
+              totalRoundsLost: 0
+            }
           );
 
           participantScores[player.id] = {
-            totalScore: calcMatchesScores
+            totalScore: calcMatchesStats.totalScore
           };
 
           cachedPlayerMatches[player.id] = {
-            totalScore: calcMatchesScores,
-            matches: filteredMatches
+            ...calcMatchesStats,
+            matches: formattedPlayerMatches
           };
         } catch (err) {
           console.log(player);
@@ -161,6 +183,7 @@ export async function calcDraftScores(draftId) {
     participantsScores.push({
       participantId: userId,
       totalScore,
+      displayName,
       selectedRoster
     });
   }
