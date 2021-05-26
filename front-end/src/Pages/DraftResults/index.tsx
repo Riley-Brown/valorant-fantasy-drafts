@@ -11,33 +11,38 @@ export default function DraftResults() {
   const [lastUpdated, setLastUpdated] = useState<number>();
   const [participantsScores, setParticipantsScores] = useState<any[]>();
   const [playerMatches, setPlayerMatches] = useState<any[]>();
-  const [players, setPlayers] = useState<{
-    [key: string]: {
-      avatarUrl: string;
-      elo: number;
-      iconUrl: string;
-      id: string;
-      pictureUrl: string;
-      platformUserHandle: string;
-      rank: number;
-      userHandleOnly: string;
-      wins: number;
-    };
-  }>();
+  const [playerMatchesRaw, setPlayerMatchesRaw] =
+    useState<{
+      [key: string]: any;
+    }>();
+  const [players, setPlayers] =
+    useState<{
+      [key: string]: {
+        avatarUrl: string;
+        elo: number;
+        iconUrl: string;
+        id: string;
+        pictureUrl: string;
+        platformUserHandle: string;
+        rank: number;
+        userHandleOnly: string;
+        wins: number;
+      };
+    }>();
 
   useEffect(() => {
     const events = new EventSource(liveDraftResultsEventsUrl(params.draftId));
 
     events.addEventListener('message', (message) => {
-      console.log(message);
-      const {
-        participantsScores,
-        playerMatches,
-        lastUpdated,
-        players
-      } = JSON.parse(message.data);
+      // console.log(message);
+      const { participantsScores, playerMatches, lastUpdated, players } =
+        JSON.parse(message.data);
+
+      console.log(JSON.parse(message.data));
 
       setParticipantsScores(participantsScores);
+
+      setPlayerMatchesRaw(playerMatches);
 
       setPlayerMatches(handleFormatPlayerMatches(playerMatches));
       setLastUpdated(lastUpdated);
@@ -51,6 +56,7 @@ export default function DraftResults() {
 
       console.log(playerMatches);
 
+      setPlayerMatchesRaw(res.data.playerMatches);
       setPlayerMatches(playerMatches);
       setLastUpdated(res.lastUpdated);
       setPlayers(res.data.players);
@@ -67,10 +73,11 @@ export default function DraftResults() {
 
   const lastUpdatedIntervalRef = useRef<any>();
 
-  const [lastUpdatedFormatted, setLastUpdatedFormatted] = useState<{
-    minutes: number;
-    seconds: number;
-  }>();
+  const [lastUpdatedFormatted, setLastUpdatedFormatted] =
+    useState<{
+      minutes: number;
+      seconds: number;
+    }>();
 
   useEffect(() => {
     const handleLastUpdated = () => {
@@ -120,25 +127,44 @@ export default function DraftResults() {
           {playerMatches.map((player) => (
             <div style={{ marginBottom: 20 }}>
               <h2>{players[player.id].userHandleOnly}</h2>
-              <img src={players[player.id].avatarUrl} alt="" />
+              <img
+                style={{ maxHeight: 128, width: 128, objectFit: 'cover' }}
+                src={players[player.id].avatarUrl}
+                alt=""
+              />
               <h4>Rank: {players[player.id].rank}</h4>
-              <h4>
-                Total score for this draft: {player.totalScore.toLocaleString()}
-              </h4>
+              <h4>Total score: {player.totalScore.toLocaleString()}</h4>
+              <h4>Kills: {player.totalKills}</h4>
+              <h4>Deaths: {player.totalDeaths}</h4>
+              <h4>Rounds won: {player.totalRoundsWon}</h4>
+              <h4>Rounds lost: {player.totalRoundsLost}</h4>
+              <h4>Assists: {player.totalAssists}</h4>
             </div>
           ))}
         </div>
       )}
       {participantsScores && (
         <div>
-          <h1 style={{ marginBottom: 20 }}>Best performing draft rosters</h1>
-
+          <h1 style={{ marginBottom: 20 }}>Best performing users</h1>
           {participantsScores.map((participant: any, index) => (
             <div style={{ marginBottom: 50 }}>
+              <h2>{participant.displayName}</h2>
               <h4 style={{ marginBottom: 10 }}>
                 Total score: {participant.totalScore.toLocaleString()}
               </h4>
-              <SelectedRoster selectedRoster={participant.selectedRoster} />
+              {participant.selectedRoster.map((player: any) => (
+                <div style={{ marginBottom: 20 }}>
+                  <h2>{player.userHandleOnly}</h2>
+                  <img src={player.avatarUrl} alt="" />
+                  <h4>Rank: {player.rank}</h4>
+                  <h4>Elo: {player.elo}</h4>
+                  <h4>
+                    Score:{' '}
+                    {playerMatchesRaw &&
+                      playerMatchesRaw[player.id]?.totalScore.toLocaleString()}
+                  </h4>
+                </div>
+              ))}
             </div>
           ))}
         </div>
