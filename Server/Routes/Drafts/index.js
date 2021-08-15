@@ -16,6 +16,10 @@ import {
   calcDraftScores
 } from '../../Components/Drafts';
 import { fromUnixTime } from 'date-fns';
+import { getTwitchChannel } from '../../API/Twitch';
+import { playersLiveStreams } from '../../Helpers';
+
+import { getDraftParticipants } from '../../DB/drafts';
 
 const scoreQueue = new Queue(
   'calc scores',
@@ -24,10 +28,11 @@ const scoreQueue = new Queue(
 
 scoreQueue.process('calcScore', async (job, done) => {
   try {
-    const scores = await calcDraftScores(job.id);
+    const scores = await calcDraftScores(job.id, job);
     job.update(null);
     done(null, scores);
   } catch (err) {
+    console.log(err);
     job.remove();
     console.log('something fucked up');
   }
@@ -152,7 +157,7 @@ router.get('/scores/:draftId', async (req, res) => {
     console.log(minutesSinceCompleted);
 
     // Queue up new job if prev older than 5 minutes
-    if (minutesSinceCompleted > 1) {
+    if (minutesSinceCompleted > 5) {
       const prevData = job.returnvalue;
       await job.remove();
       await scoreQueue.add('calcScore', prevData, {
@@ -186,7 +191,17 @@ router.get('/scores/:draftId/events', async (req, res) => {
   scoreQueue.on('completed', (job) => {
     res.write(
       `data: ${JSON.stringify({
-        ...job.returnvalue,
+        ...(job.returnvalue || job.data),
+        lastUpdated: Math.floor(job.finishedOn / 1000)
+      })}\n\n`
+    );
+  });
+
+  scoreQueue.on('progress', (job) => {
+    console.log({ job });
+    res.write(
+      `data: ${JSON.stringify({
+        ...(job.returnvalue || job.data),
         lastUpdated: Math.floor(job.finishedOn / 1000)
       })}\n\n`
     );
@@ -196,6 +211,30 @@ router.get('/scores/:draftId/events', async (req, res) => {
     scoreQueue.removeAllListeners();
     res.end();
   });
+});
+
+router.get('/live/:draftId/streams', async (req, res) => {
+  const participants = await getDraftParticipants(req.params.draftId);
+
+  console.log({ participants });
+
+  return;
+  // console.log({ draft });
+  for (let i = 0; i < draft.players.length; i++) {
+    const { id } = draft.players[i];
+
+    if (playersLiveStreams[id]) {
+      const { channelName } = playersLiveStreams[draft.players[i].id];
+
+      console.log(channelName);
+
+      if (channelName) {
+        const twitchChannel = await getTwitchChannel(channelName);
+        console.log({ twitchChannel });
+      }
+    }
+  }
+  // console.log(draft);
 });
 
 export default router;
