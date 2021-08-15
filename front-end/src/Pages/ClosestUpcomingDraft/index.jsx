@@ -19,7 +19,7 @@ import { setShowAuthModal, updateAccount } from 'Actions';
 
 import { formattedInt } from 'Helpers';
 
-export default function ClosestUpcomingDraft() {
+export default function ClosestUpcomingDraft({ history }) {
   const [draftData, setDraftData] = useState();
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,9 +53,19 @@ export default function ClosestUpcomingDraft() {
     );
   };
 
-  const { days, hours, minutes, seconds } = useCountdownTimer({
-    unixTimestamp: draftData?.startDate
-  });
+  const { days, hours, minutes, seconds, countdownReached } = useCountdownTimer(
+    {
+      unixTimestamp: draftData?.startDate
+    }
+  );
+
+  useEffect(() => {
+    if (countdownReached) {
+      history.push(`/draft/live/${draftData._id}`);
+    }
+  }, [countdownReached]);
+
+  console.log({ days, hours, minutes, seconds });
 
   const [filteredPlayers, setFilteredPlayers] = useState([]);
   const [searchFilter, setSearchFilter] = useState('');
@@ -120,7 +130,14 @@ export default function ClosestUpcomingDraft() {
       <p style={{ marginBottom: '20px' }}>
         {draftData && !Number.isNaN(days) && (
           <>
-            Starts in {days === 0 ? null : 'days'} {hours}:{minutes}:{seconds}
+            {countdownReached ? (
+              'Draft is live!'
+            ) : (
+              <>
+                Starts in {days === 0 ? null : 'days'} {hours}:{minutes}:
+                {seconds}
+              </>
+            )}
             {draftData.entryFee && (
               <span style={{ marginLeft: '10px' }}>
                 Entry fee: ${formattedInt(draftData.entryFee)}
