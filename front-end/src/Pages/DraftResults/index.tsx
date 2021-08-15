@@ -4,31 +4,43 @@ import { useParams } from 'react-router';
 import { getLiveDraftResults, liveDraftResultsEventsUrl } from 'API';
 import SelectedRoster from 'Pages/ClosestUpcomingDraft/SelectedRoster';
 import { calcUnixTimeDifference } from 'Helpers';
+import { useTypedSelector } from 'Reducers';
 
 export default function DraftResults() {
   const params = useParams<{ draftId: string }>();
 
+  const account = useTypedSelector((state) => state.account);
+  const [isUserEntered, setIsUserEntered] = useState(false);
+
+  useEffect(() => {
+    const findDraft = account.drafts.find(
+      (draft) => draft.draftId === params.draftId
+    );
+
+    if (findDraft) {
+      setIsUserEntered(true);
+    }
+  }, [account.drafts, params.draftId]);
+
   const [lastUpdated, setLastUpdated] = useState<number>();
   const [participantsScores, setParticipantsScores] = useState<any[]>();
   const [playerMatches, setPlayerMatches] = useState<any[]>();
-  const [playerMatchesRaw, setPlayerMatchesRaw] =
-    useState<{
-      [key: string]: any;
-    }>();
-  const [players, setPlayers] =
-    useState<{
-      [key: string]: {
-        avatarUrl: string;
-        elo: number;
-        iconUrl: string;
-        id: string;
-        pictureUrl: string;
-        platformUserHandle: string;
-        rank: number;
-        userHandleOnly: string;
-        wins: number;
-      };
-    }>();
+  const [playerMatchesRaw, setPlayerMatchesRaw] = useState<{
+    [key: string]: any;
+  }>();
+  const [players, setPlayers] = useState<{
+    [key: string]: {
+      avatarUrl: string;
+      elo: number;
+      iconUrl: string;
+      id: string;
+      pictureUrl: string;
+      platformUserHandle: string;
+      rank: number;
+      userHandleOnly: string;
+      wins: number;
+    };
+  }>();
 
   useEffect(() => {
     const events = new EventSource(liveDraftResultsEventsUrl(params.draftId));
@@ -50,6 +62,8 @@ export default function DraftResults() {
     });
 
     getLiveDraftResults(params.draftId).then((res) => {
+      if (!res.data) return;
+
       setParticipantsScores(res.data.participantsScores);
 
       const playerMatches = handleFormatPlayerMatches(res.data.playerMatches);
@@ -73,11 +87,10 @@ export default function DraftResults() {
 
   const lastUpdatedIntervalRef = useRef<any>();
 
-  const [lastUpdatedFormatted, setLastUpdatedFormatted] =
-    useState<{
-      minutes: number;
-      seconds: number;
-    }>();
+  const [lastUpdatedFormatted, setLastUpdatedFormatted] = useState<{
+    minutes: number;
+    seconds: number;
+  }>();
 
   useEffect(() => {
     const handleLastUpdated = () => {
@@ -126,13 +139,13 @@ export default function DraftResults() {
           )}
           {playerMatches.map((player) => (
             <div style={{ marginBottom: 20 }}>
-              <h2>{players[player.id].userHandleOnly}</h2>
+              <h2>{players[player.id]?.userHandleOnly}</h2>
               <img
                 style={{ maxHeight: 128, width: 128, objectFit: 'cover' }}
-                src={players[player.id].avatarUrl}
+                src={players[player.id]?.avatarUrl}
                 alt=""
               />
-              <h4>Rank: {players[player.id].rank}</h4>
+              <h4>Rank: {players[player.id]?.rank}</h4>
               <h4>Total score: {player.totalScore.toLocaleString()}</h4>
               <h4>Kills: {player.totalKills}</h4>
               <h4>Deaths: {player.totalDeaths}</h4>
