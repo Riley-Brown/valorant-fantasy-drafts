@@ -1,7 +1,4 @@
-import {
-  getDraftsCollection,
-  getDraftParticipantsCollection
-} from '../../DB/drafts';
+import { getDraftsCollection, getDraftParticipants } from '../../DB/drafts';
 import { getLeaderboard, getPlayerMatches } from '../../API/TrackerGG';
 
 import { FormatPlayerMatches } from '../../Models/PlayerMatches';
@@ -82,7 +79,7 @@ export async function getClosestUpcomingDraft() {
   }
 }
 
-export async function calcDraftScores(draftId) {
+export async function calcDraftScores(draftId, job) {
   console.time('calc scores');
 
   const draft = await getDraftById(draftId);
@@ -91,13 +88,9 @@ export async function calcDraftScores(draftId) {
     throw Error('Draft does not exist');
   }
 
-  const { draftParticipantsCollection } = await getDraftParticipantsCollection({
-    draftId
-  });
+  const participants = await getDraftParticipants(draftId);
 
-  const participants = await draftParticipantsCollection.find().toArray();
-
-  if (!draftParticipantsCollection) {
+  if (!participants) {
     throw Error('Draft does not exist');
   }
 
@@ -180,12 +173,26 @@ export async function calcDraftScores(draftId) {
       0
     );
 
+    console.log('finished ' + i);
+
     participantsScores.push({
       participantId: userId,
       totalScore,
       displayName,
       selectedRoster
     });
+
+    // console.log({ job });
+
+    await job.update({
+      participantsScores,
+      playerMatches: cachedPlayerMatches,
+      players
+    });
+
+    const progress = Math.floor((i / participants.length) * 100);
+    console.log({ progress });
+    await job.progress(progress);
   }
 
   console.timeEnd('calc scores');
