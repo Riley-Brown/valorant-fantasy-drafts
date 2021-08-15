@@ -5,7 +5,20 @@ export type AccountStateTypes = {
   balance: number;
   balanceFormatted: string;
   displayName: string;
-  drafts: any[]; // todo: properly type check this eventually
+  drafts: {
+    draftId: string;
+    enterDate: number;
+    entryFee: number;
+    selectedRoster: {
+      avatarUrl: string;
+      elo: number;
+      id: string;
+      pictureUrl: string;
+      platformUserHandle: string;
+      userHandleOnly: string;
+      wins: number;
+    }[];
+  }[];
   email: string;
   isAdmin: boolean;
   payment?: {
