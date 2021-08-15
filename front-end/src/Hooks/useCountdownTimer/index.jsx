@@ -2,7 +2,15 @@ import { useState, useEffect } from 'react';
 
 export default function useCountdownTimer({ unixTimestamp }) {
   const calculateTimeLeft = () => {
-    const difference = Math.abs(unixTimestamp - Date.now() / 1000);
+    const currentDate = Date.now() / 1000;
+
+    if (currentDate >= unixTimestamp) {
+      return {
+        countdownReached: true
+      };
+    }
+
+    const difference = Math.abs(unixTimestamp - currentDate);
 
     const days = Math.floor(difference / 60 / 60 / 24);
     const hours = Math.floor((difference / 60 / 60) % 24);
