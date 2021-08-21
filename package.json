@@ -32,6 +32,7 @@
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "node-valorant-api": "^0.5.0",
+    "redis": "^3.1.2",
     "stripe": "^8.140.0",
     "uuid": "^8.3.2"
   },
